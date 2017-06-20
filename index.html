@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<!--[if lt IE 8]>
+<html class="no-js nav theme-blue lt-ie10 lt-ie9 lt-ie8 " lang="en-us"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js nav theme-blue lt-ie10 lt-ie9 " lang="en-us"> <![endif]-->
+<!--[if IE 9]>
+<html class="no-js nav theme-blue lt-ie10 " lang="en-us"> <![endif]-->
+<!--[if !IE]><!-->
+<html class="no-js nav theme-blue " lang="en-us" > <!--<![endif]-->
+<head>
+    <meta charset="utf-8"/>
+    <title>Science Clips - Search</title>
+
+    <meta name="description" content="Science Clips"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="apple-touch-icon" sizes="144x144"
+          href="/TemplatePackage/3.0/images/cdc-touch-icon-144x144.png"/>
+    <link rel="apple-touch-icon" sizes="114x114"
+          href="/TemplatePackage/3.0/images/cdc-touch-icon-114x114.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="/TemplatePackage/3.0/images/cdc-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" href="/TemplatePackage/3.0/images/cdc-touch-icon-57x57.png"/>
+    <link rel="shortcut icon" href="/TemplatePackage/3.0/images/favicon.ico"/>
+
+    <meta name="robots" content="index,follow"/>
+    <meta property="cdc:template_version" content="3.0"/>
+    <meta property="cdc:content_id" content="5338" />
+
+    <meta property="cdc:wcms_build" content="4.2.1 - b.16" />
+
+
+    <!-- include virtual="/TemplatePackage/3.0/includes/head.html" -->
+    <link rel="stylesheet" href="/TemplatePackage/3.0/css/lib/bootstrap24.css" />
+    <link rel="stylesheet" href="/TemplatePackage/3.0/css/app.css?3.2.3.1" />
+    <!--[if gt IE 9]><!--><!--<![endif]-->
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="/TemplatePackage/3.0/css/lib/font-awesome-ie7.css" />
+    <![endif]-->
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="/TemplatePackage/3.0/css/ie.css" />
+    <![endif]-->
+    <link rel="stylesheet" media="print" href="/TemplatePackage/3.0/css/print.css?3.2.3.1" />
+    <script src="/TemplatePackage/3.0/js/libs/modernizr-latest.js"></script>
+    <script>
+        if(!Date.now){Date.now=function now(){return new Date().getTime()}}
+        var page_timing = page_timing || {};
+        page_timing.page_start = Date.now();
+        function $$(e){if(window.$){e()}else{setTimeout(function(){$$(e)},50)}}
+        // (function(){function e(e,t){var n=e.length;while(n--){if(e[n].indexOf(t)>-1){return e[n]}}return false}var t=e(document.getElementsByTagName("html")[0].className.split(" "),"theme-");if(t){var n=document.createElement("link");n.rel="stylesheet";n.type="text/css";n.media="screen";n.href="/TemplatePackage/3.0/css/themes/"+t+".css";document.getElementsByTagName("head")[0].appendChild(n)}})();
+
+        var settings = {}, addthis = null;
+    </script>
+
+    <meta name="application-name" content="CDC.gov"/>
+    <meta property="cdc:template_version" content="3.2.3.1" />
+    <meta name="msapplication-TileColor" content="#0061aa" />
+    <meta name="msapplication-square70x70logo" content="/TemplatePackage/3.0/images/Win8_tile_70x70.png" />
+    <meta name="msapplication-square150x150logo" content="/TemplatePackage/3.0/images/Win8_tile_150x150.png" />
+    <meta name="msapplication-wide310x150logo" content="/TemplatePackage/3.0/images/Win8_tile_310x150.png" />
+    <meta name="msapplication-square310x310logo" content="/TemplatePackage/3.0/images/Win8_tile_310x310.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+
+    <script type='text/javascript' src='https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js'></script>
+
+    <link rel="stylesheet" href="custom.css"/>
+</head>
+<body>
+
+
+<div id="skipmenu">
+    <a href="#searchTarget" class="skippy">Skip directly to search</a>
+    <a href="#azTab" class="skippy">Skip directly to A to Z list</a>
+    <a href="#nav-container" class="skippy">Skip directly to navigation</a>
+    <a href="#share-bar" class="skippy">Skip directly to page options</a>
+    <a href="#contentArea" class="skippy">Skip directly to site content</a>
+</div><div id="wrapper">
+
+    <!-- references to this removed intentionally -->
+    <header id="header">
+        <div class="container">
+            <!-- header -->
+            <div class="row">
+                <div id="logo" class="span14">
+                    <!--iPad touch response and 508 voice reader issue currently under investigation -->
+                    <a href="https://www.cdc.gov" title="Centers for Disease Control and Prevention. CDC twenty four seven. Saving Lives, Protecting People">
+                        <img src="/TemplatePackage/3.0/images/masthead_subpage.svg" alt="Centers for Disease Control and Prevention. CDC twenty four seven. Saving Lives, Protecting People" class="hidden-one" />
+                        <img src="/TemplatePackage/3.0/images/masthead_1-col.svg" alt="Centers for Disease Control and Prevention. CDC twenty four seven. Saving Lives, Protecting People" class="visible-one" />
+                    </a>
+
+                    <!-- IOS9 iPad bug work around - make sure screen readers have a readable version of the logo to read
+                    <a class="tp-sr-only" href="https://www.cdc.gov">Centers for Disease Control and Prevention. CDC twenty four seven. Saving Lives, Protecting People</a>
+                     -->
+                </div>
+                <!-- search viewport 3/4 -->
+                <div id="searchArea" class="span10 hidden-one hidden-two">
+                    <div class="hidden"><a href="#" name="searchTarget">Start of Search Controls</a></div>
+                    <form class="searchForm" method="get" action="https://search.cdc.gov/search">
+                        <fieldset class="search-form-wrapper">
+                            <legend>Search Form Controls</legend>
+                            <div class="search-form-checkbox">
+                                <label class="subset"><input type="checkbox" name="subset" checked="checked"
+                                                             value="">Science Clips</label>
+                            </div>
+                            <div class="search-input-wrapper">
+                                <div class="search-buttons">
+                                    <button class="btn-clear"><span class="sprite-14-close">Cancel</span></button>
+                                    <button class="btn-submit"><span class="sprite-14-search-black">Submit</span></button>
+                                    <input type="submit" value="Submit" style="display:none; visibility:hidden;"/>
+                                </div>
+                                <div class="search-input">
+                                    <label><input type="text" placeholder="SEARCH" name="query"/><span
+                                            class="hidden"></span></label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="utf8" value="&#x2713;"/>
+                            <input type="hidden" name="affiliate" value="cdc-main"/>
+                        </fieldset>
+                    </form>
+                    <div class="a2z-button pull-right hidden-one hidden-two"><a href="#" id="azTab">CDC A-Z Index <span class="icon-angle-down"></span></a></div>
+                </div>
+                <!-- /search viewport 3/4 -->
+            </div>
+            <div class="hidden-three hidden-four" id="mobile-menu">
+                <ul>
+                    <li id="vp1-menu-button" class="border-bottom-white"><a href="#" id="menu-nav"><span class="sprite-16-menu"></span>MENU</a></li>
+                    <li id="vp1-a2z-button" class="border-bottom-white"><a href="#" id="menu-az">CDC A-Z</a></li>
+                    <li id="vp1-search-button" class="border-bottom-white"><a href="#" id="menu-search"><span class="sprite-16-search-white"></span>SEARCH</a></li>
+                </ul>
+            </div>
+            <script>if (typeof page_timing !== 'undefined') { page_timing.menu_load = Date.now(); }</script>
+            <div class="a2z-bar hide">
+                <div>
+                    <ul>
+                        <li><a href="https://www.cdc.gov/az/a.html">A</a></li>
+                        <li><a href="https://www.cdc.gov/az/b.html">B</a></li>
+                        <li><a href="https://www.cdc.gov/az/c.html">C</a></li>
+                        <li><a href="https://www.cdc.gov/az/d.html">D</a></li>
+                        <li><a href="https://www.cdc.gov/az/e.html">E</a></li>
+                        <li><a href="https://www.cdc.gov/az/f.html">F</a></li>
+                        <li><a href="https://www.cdc.gov/az/g.html">G</a></li>
+                        <li><a href="https://www.cdc.gov/az/h.html">H</a></li>
+                        <li><a href="https://www.cdc.gov/az/i.html">I</a></li>
+                        <li><a href="https://www.cdc.gov/az/j.html">J</a></li>
+                        <li><a href="https://www.cdc.gov/az/k.html">K</a></li>
+                        <li><a href="https://www.cdc.gov/az/l.html">L</a></li>
+                        <li><a href="https://www.cdc.gov/az/m.html">M</a></li>
+                        <li><a href="https://www.cdc.gov/az/n.html">N</a></li>
+                        <li><a href="https://www.cdc.gov/az/o.html">O</a></li>
+                        <li><a href="https://www.cdc.gov/az/p.html">P</a></li>
+                        <li><a href="https://www.cdc.gov/az/q.html">Q</a></li>
+                        <li><a href="https://www.cdc.gov/az/r.html">R</a></li>
+                        <li><a href="https://www.cdc.gov/az/s.html">S</a></li>
+                        <li><a href="https://www.cdc.gov/az/t.html">T</a></li>
+                        <li><a href="https://www.cdc.gov/az/u.html">U</a></li>
+                        <li><a href="https://www.cdc.gov/az/v.html">V</a></li>
+                        <li><a href="https://www.cdc.gov/az/w.html">W</a></li>
+                        <li><a href="https://www.cdc.gov/az/x.html">X</a></li>
+                        <li><a href="https://www.cdc.gov/az/y.html">Y</a></li>
+                        <li><a href="https://www.cdc.gov/az/z.html">Z</a></li>
+                        <li><a href="https://www.cdc.gov/az/0.html">#</a></li>
+                    </ul>
+                </div>
+                <script>if (typeof page_timing !== 'undefined') { page_timing.a2z_load = Date.now(); }</script>			</div>
+            <!-- search viewport 1/2 -->
+            <div id="searchArea-two-column" class="span24 searchbar hide hidden-three hidden-four">
+                <div class="hidden"><a href="#" name="searchTarget">Start of Search Controls</a></div>
+                <form class="searchForm" method="get" action="https://search.cdc.gov/search">
+                    <fieldset class="search-form-wrapper">
+                        <legend>Search Form Controls</legend>
+                        <div class="search-form-checkbox">
+                            <label class="subset"><input type="checkbox" name="subset" checked="checked"
+                                                         value="">Science Clips</label>
+                        </div>
+                        <div class="search-input-wrapper">
+                            <div class="search-buttons">
+                                <button class="btn-clear"><span class="sprite-14-close">Cancel</span></button>
+                                <button class="btn-submit"><span class="sprite-14-search-black">Submit</span></button>
+                                <input type="submit" value="Submit" style="display:none; visibility:hidden;"/>
+                            </div>
+                            <div class="search-input">
+                                <label><input type="text" placeholder="SEARCH" name="query"/><span
+                                        class="hidden"></span></label>
+                            </div>
+                        </div>
+                        <input type="hidden" name="utf8" value="&#x2713;"/>
+                        <input type="hidden" name="affiliate" value="cdc-main"/>
+                    </fieldset>
+                </form>
+            </div>
+            <!-- /search viewport 1/2 -->
+            <!--
+    See the noscript include for modifying the emergency message. DO NOT add it here.
+-->
+            <script>if (typeof page_timing !== 'undefined') { page_timing.emergency_load = Date.now(); }</script>
+            <!-- /header -->
+            <div class="titlebar">
+                <!-- When this template is used for a topic home page then the following should be an <h1> tag. -->
+                <h2><a href="http://www.cdc.gov/library/">Stephen B. Thacker CDC Library<br /></a>
+                </h2>												</div>
+            <!-- emergency -->
+            <div id="emergencyContainer">
+                <!--
+                <div class="alert alert-error en">
+                    <b>Attention!</b> Uncomment this section and place the emergency message here.
+                </div>
+                <div class="alert alert-error esp">
+                    <b>&#161;Atenci&#243;n!</b> Elimine el comentario de esta secci&#243;n y colocar el mensaje de emergencia aqu&#237;.
+                </div>
+                -->
+            </div>
+
+            <!-- no script -->
+            <noscript>
+                <div class="alert alert-block"> Note: Javascript is disabled or is not supported by your browser. For this reason, some items on this page will be unavailable. For more information about this message, please visit this page: <a href="//www.cdc.gov/other/about_cdcgov.html">About CDC.gov</a>.</div>
+            </noscript>
+            <script>if (typeof page_timing !== 'undefined') { page_timing.noscript_load = Date.now(); }</script>
+        </div>
+    </header>
+    <div class="container">
+        <div id="content">
+            <div class="row">
+                <!-- left nav -->
+                <div id="nav-container" class="hidden-one hidden-two span5">
+                    <nav id="left" class="hidden-one hidden-two">
+                        <h3><a href="#">CDC Library</a></h3>
+                        <ul id="nav-primary">
+                            <li><a href="/library/history.html">History</a></li>
+                            <li><a href="/library/products_services.html">Products &amp; Services</a></li>
+                            <li><a href="/library/branches.html">Branch Locations</a></li>
+                            <li><a href="/library/policies_patrons.html">Policies &amp; Patrons</a></li>
+                            <li><a href="/library/orientation_training.html">Orientation &amp; Training</a></li>
+                            <li><a href="/library/sciclips/index.html">CDC Science Clips</a>
+                                <ul id="nav-primary">
+                                    <li><a href="/library/sciclips/issues/index.html">Current Issue</a></li>
+                                    <li><a href="/library/sciclips/archive.html">Previous Issues</a></li>
+                                    <li><a href="/library/sciclips/faq.html">FAQ</a></li>
+                                    <li><a href="/library/sciclips/production_staff.html">Production Staff</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="nav-related">
+                        <div class="module-typeG emailupdates">
+                            <h4>Get Email Updates</h4>
+                            <p>To receive email updates about this page, enter your email address:</p>
+                            <form action="https://public.govdelivery.com/accounts/USCDC/subscribers/qualify" name="govdelivery">
+                                <fieldset><input id="whatsThis" name="topic_id" type="hidden" value="USCDC_520" /> <label><span class="hidden">Enter Email Address</span><input class="email" name="email" onfocus="this.value=&#39;&#39;" type="text" value="" /></label> <a class="explain" href="http://www.cdc.gov/emailupdates/">What&#39;s this?</a> <a class="button" href="javascript:quicksubscribe();return false;">Submit</a> <noscript><a class="explain" href="http://www.cdc.gov/emailupdates/">What&#39;s this?</a> <label><span class="hidden">Submit Button</span><input class="button submit" name="commit" type="submit" value="Submit" /></label></noscript></fieldset>
+                            </form>
+                        </div>
+                        <!-- EMPTY SSI -->			</div>
+                </div>
+                <div id="featureArea">
+
+                    <div class="span19">
+                        <a href="http://www.cdc.gov/library">
+                            <img class="" alt="Stephen B. Thacker Library Logo" src="https://www.cdc.gov/library/images/libraryheader-short.png"/>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="breadcrumbs hidden-one span19">
+                    <div class="bread-crumb hidden-one">
+                        <div class="prefix">
+		<span>
+			<a href="/">Home</a>
+		</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="span19 pagetitle">
+                    <div class="syndicate">
+                        <h1>Search Science Clips</h1>
+                    </div>
+                </div>
+                <div id="share-bar" class="span19">
+                    <div class="socialmediabar">
+                        <div class="row">
+                            <div class="hidden-one pull-right">
+                            </div>
+                            <div class="span8">
+                                <div id="socialMediaShareContainer">
+                                    <div class="share_container noLinking">
+                                        <a class="share_button_facebook" title="Facebook" href="#"><span class="tp-sr-only">Recommend on Facebook</span><span id="share_facebook" class="facebookRecommend"> </span></a>
+                                        <a class="share_button_twitter" title="Twitter" href="#"><span class="tp-sr-only">Tweet</span><span id="share_twitter" class="twitterTweet"> </span></a>
+                                        <a class="share_button" href="#socialMediaShareContainer" ><img src="/TemplatePackage/3.0/images/social/addthis-32.png" alt="Share" /><span class="shareButtonEn tp-sr-only" aria-label="Share">Share</span><span class="shareButtonEs tp-sr-only" aria-label="Compartir">Compartir</span></a>
+                                    </div>
+                                </div>
+
+                                <!-- target anchor for return to top feature in VP1 -->
+                                <a id="content-start" tabindex="-1"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- body -->
+                <div id="body" class="span19">
+                    <div id="contentArea">
+                        <a href="https://data.cdc.gov/oauth/authorize?client_id=1XGlTdFOCn5DilvbOnya6Je0P&response_type=code">Authenticate</a>
+                        <div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="search-text" placeholder="Search for...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" id="search-button" type="button">Go!</button>
+                                </span>
+                            </div>
+                        </div>
+                        <div id="search-results-container"></div>
+                        <br/>
+                        <div>
+                            <button class="btn btn-primary" id="load-more-search-results" style="display: none">Load More</button>
+                            <i id="loading-spinner" class="spinner icon-spinner icon-spin" style="display:none;"></i>
+                        </div>
+
+                        <!-- Related Nav Area -->
+                        <div class="nav-related hidden-three hidden-four">
+                            <div class="module-typeG emailupdates">
+                                <h4>Get Email Updates</h4>
+                                <p>To receive email updates about this page, enter your email address:</p>
+                                <form action="https://public.govdelivery.com/accounts/USCDC/subscribers/qualify" name="govdelivery">
+                                    <fieldset><input id="whatsThis" name="topic_id" type="hidden" value="USCDC_520" /> <label><span class="hidden">Enter Email Address</span><input class="email" name="email" onfocus="this.value=&#39;&#39;" type="text" value="" /></label> <a class="explain" href="http://www.cdc.gov/emailupdates/">What&#39;s this?</a> <a class="button" href="javascript:quicksubscribe();return false;">Submit</a> <noscript><a class="explain" href="http://www.cdc.gov/emailupdates/">What&#39;s this?</a> <label><span class="hidden">Submit Button</span><input class="button submit" name="commit" type="submit" value="Submit" /></label></noscript></fieldset>
+                                </form>
+                            </div>
+                            <!-- EMPTY SSI -->		</div>
+                        <!-- /end Related Nav Area -->
+                        <!-- Persistent Content Area -->
+                        <div id="content-secondary">
+                        </div><!-- /end #content-secondary -->
+                    </div><!-- /end #contentArea -->
+                </div><!-- /end #body -->
+            </div>
+            <div class="row">
+                <div class="span24 visible-one">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span24">
+                    <div id="plugin-legend" class="pluginOff">
+                        <h5>File Formats Help:</h5><span><a href="https://www.cdc.gov/Other/plugins/">How do I view different file formats (PDF, DOC, PPT, MPEG) on this site?</a></span>
+                        <ul>
+                            <li class="plugin-pdf"><a href="https://www.cdc.gov/Other/plugins/#pdf"><span class="sprite-16-pdf">Adobe PDF file</span></a></li>
+                            <li class="plugin-ppt"><a href="https://www.cdc.gov/Other/plugins/#ppt"><span class="sprite-16-ppt">Microsoft PowerPoint file</span></a></li>
+                            <li class="plugin-word"><a href="https://www.cdc.gov/Other/plugins/#doc"><span class="sprite-16-word">Microsoft Word file</span></a></li>
+                            <li class="plugin-excel"><a href="https://www.cdc.gov/Other/plugins/#xls"><span class="sprite-16-excel">Microsoft Excel file</span></a></li>
+                            <li class="plugin-wmv"><a href="https://www.cdc.gov/Other/plugins/#wmv"><span class="sprite-16-wmv">Audio/Video file</span></a></li>
+                            <li class="plugin-qt"><a href="https://www.cdc.gov/Other/plugins/#qt"><span class="sprite-16-qt">Apple Quicktime file</span></a></li>
+                            <li class="plugin-real"><a href="https://www.cdc.gov/Other/plugins/#ram"><span class="sprite-16-rp">RealPlayer file</span></a></li>
+                            <li class="plugin-text"><a href="https://www.cdc.gov/Other/plugins/#text"><span class="sprite-16-txt">Text file</span></a></li>
+                            <li class="plugin-zip"><a href="https://www.cdc.gov/Other/plugins/#zip"><span class="sprite-16-zip">Zip Archive file</span></a></li>
+                            <li class="plugin-sas"><a href="https://www.cdc.gov/Other/plugins/#sas"><span class="sprite-16-sas">SAS file</span></a></li>
+                            <li class="plugin-epub"><a href="https://www.cdc.gov/Other/plugins/#epub"><span class="sprite-16-ebook">ePub file</span></a></li>
+                            <li class="plugin-ris"><a href="https://www.cdc.gov/Other/plugins/#ris"><span class="sprite-16-ris">RIS file</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- date stamp -->
+            <div id="datestamp" class="row" itemscope="itemscope" itemtype="http://schema.org/WebPage">
+                <div class="span24">
+                    <ul>
+                        <li class="last-reviewed">Page last reviewed: <span itemprop="lastReviewed">June 2, 2017</span></li>						<li class="last-updated">Page last updated: <span itemprop="dateModified">June 2, 2017</span></li>						<li class="content-source">Content source:
+                        <ul class="noindent">
+                            <li class="" itemprop="sourceOrganization" itemscope="itemscope" itemtype="http://schema.org/Organization"><a href="/" itemprop="url">Centers for Disease Control and Prevention</a></li>
+                        </ul>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        </div><!-- /end #content -->
+    </div><!-- / end .container -->
+    <!-- footer -->
+    <footer id="footer" class="cdcSlimFooter">
+
+        <!-- include eng footerSubSocialMedia.html -->
+        <div class="socialMedia">
+            <div class="container">
+                <nav class="followcdc">
+                    <ul>
+                        <li><a href="https://www.cdc.gov/Other/emailupdates"><span class="sprite-24-govd"></span><span class="tp-sr-only">Email</span></a></li>
+                        <li><a href="https://www.facebook.com/CDC" target="_blank"><span class="sprite-24-facebook"></span><span class="tp-sr-only">Recommend</span></a></li>
+                        <li><a href="https://twitter.com/CDCgov" target="_blank"><span class="sprite-24-twitter"></span><span class="tp-sr-only">Tweet</span></a></li>
+                        <li><a href="https://www.youtube.com/user/CDCstreamingHealth" target="_blank"><span class="sprite-24-youtube"></span><span class="tp-sr-only">YouTube</span></a></li>
+                        <li><a href="https://www.instagram.com/CDCgov/" target="_blank"><span class="sprite-24-instagram"></span><span class="tp-sr-only">Instagram</span></a></li>
+                    </ul>
+                </nav>
+                <nav class="cdcmedia">
+                    <ul>
+                        <li><a href="https://www2c.cdc.gov/podcasts"><span class="sprite-24-listen"></span><span class="tp-sr-only">Listen</span></a></li>
+                        <li><a href="https://www.cdc.gov/cdctv"><span class="sprite-24-watch"></span><span class="tp-sr-only">Watch</span></a></li>
+                        <li><a href="https://www2c.cdc.gov/podcasts/rss.asp"><span class="sprite-24-rss"></span><span class="tp-sr-only">RSS</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- /include eng footerSubSocialMedia.html -->
+
+        <div class="container">
+            <div class="cdcLinks">
+                <div class="container">
+                    <ul>
+
+                        <!-- include eng footerSubCdcLinks.html-->
+                        <li>
+                            <nav>
+                                <h6 class="hidden-four hidden-three">ABOUT <span class="icon-plus visible-one pull-right"></span></h6>
+                                <ul class="hidden-one">
+                                    <li><a href="https://www.cdc.gov/about/default.htm">About CDC</a></li>
+                                    <li><a href="https://jobs.cdc.gov">Jobs</a></li>
+                                    <li><a href="https://www.cdc.gov/funding">Funding</a></li>
+                                </ul>
+                            </nav>
+                        </li>
+                        <li>
+                            <nav>
+                                <h6 class="hidden-four hidden-three">LEGAL <span class="icon-plus visible-one pull-right"></span></h6>
+                                <ul class="hidden-one">
+                                    <li><a href="https://www.cdc.gov/Other/policies.html">Policies</a></li>
+                                    <li><a href="https://www.cdc.gov/Other/privacy.html">Privacy</a></li>
+                                    <li><a href="https://www.cdc.gov/od/foia">FOIA</a></li>
+                                    <li><a href="https://www.cdc.gov/eeo/nofearact/index.htm">No Fear Act</a></li>
+                                    <li><a href="https://oig.hhs.gov" class="no-link">OIG</a></li>
+                                </ul>
+                            </nav>
+                        </li>
+                        <!--/ include eng footerSubCdcLinks.html-->
+
+                    </ul>
+                </div>
+            </div>
+            <div class="cdcContact">
+                <div class="container">
+                    <ul>
+                        <li class="local-contact">
+
+                            <!-- include eng footerSubGlobalContact1.html -->
+                            <section>
+                                <address class="address" itemscope="itemscope" itemtype="https://schema.org/Organization">
+		<span class="value" itemprop="address" itemscope="itemscope" itemtype="https://schema.org/PostalAddress">
+			<span itemprop="streetAddress">1600 Clifton Road</span>
+			<span itemprop="addressLocality">Atlanta</span>,
+			<span itemprop="addressRegion">GA</span>
+			<span itemprop="postalCode">30329-4027</span>
+			<span itemprop="addressCountry">USA</span>
+		</span><br />
+                                    <span class="value" itemprop="telephone">800-CDC-INFO (800-232-4636)</span>,
+                                    <span class="value" itemprop="telephone">TTY: 888-232-6348</span><br />
+                                    <span class="value" itemprop="contactPoint" itemscope="itemscope" itemtype="https://schema.org/ContactPoint">
+			<span itemprop="url"><a href="https://wwwn.cdc.gov/dcs/RequestForm.aspx" class=" default no-link">Email CDC-INFO</a></span>
+		</span>
+                                </address>
+                            </section>
+                            <!-- /include eng footerSubGlobalContact1.html -->
+
+                        </li>
+                        <li class="contact">
+
+                            <!-- include eng footerSubGlobalContact2.html -->
+                            <section>
+                                <address class="address" itemscope="itemscope" itemtype="https://schema.org/Organization">
+		<span class="value" itemprop="contactPoint" itemscope="itemscope" itemtype="https://schema.org/ContactPoint">
+			<span itemprop="url"><a href="https://www.hhs.gov" class="no-link">U.S. Department of Health & Human Services</a></span>
+		</span><br />
+                                    <span class="value" itemprop="contactPoint" itemscope="itemscope" itemtype="https://schema.org/ContactPoint">
+        	<span itemprop="url"><a href="https://www.hhs.gov/open" class="no-link">HHS/Open</a></span>
+        </span><br />
+                                    <span class="value" itemprop="contactPoint" itemscope="itemscope" itemtype="https://schema.org/ContactPoint">
+			<span itemprop="url"><a href="https://www.usa.gov/" class="no-link">USA.gov</a></span>
+		</span>
+                                </address>
+                            </section>
+                            <!-- /include eng footerSubGlobalContact2.html -->
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>	<!-- /#footer -->
+    <div id="totop" class="off visible-one">TOP</div>
+</div>
+
+<script>page_timing.libs_start = Date.now();</script><script src="/TemplatePackage/3.0/js/libs.min.js?3.2.3.1"></script><script>page_timing.libs_end = Date.now();page_timing.core_start = Date.now();</script><script src="/TemplatePackage/3.0/js/core.min.js?3.2.3.1"></script><script>page_timing.core_end = Date.now();</script>
+<script>
+</script>
+<script>page_timing.app_start = Date.now();</script><script src="/TemplatePackage/3.0/js/app.min.js?3.2.3.1"></script><script>page_timing.app_end = Date.now();</script>
+<!-- start wcmsrd-1929 -->
+<!-- end wcmsrd-1929 -->
+
+
+<script>if (typeof page_timing !== 'undefined') { page_timing.metrics_start = Date.now(); }</script>
+
+<script>if (typeof page_timing !== 'undefined') { page_timing.metrics_end = Date.now(); }</script>
+
+<script>$(document).ready(function(){var cdcLeftNav = new CDC.LeftNav('nav-primary');
+    cdcLeftNav.render();
+});</script>
+<script src="sci_clips_search.js"></script>
+
+
+</body>
+</html>
