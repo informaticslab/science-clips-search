@@ -24,7 +24,6 @@ var SciClipsSearchModule = (function(){
     var loadingSpinner = $('#loading-spinner');
     var searchResultsContainer = $('#search-results-container');
     var moreResultsButton = $('#load-more-search-results');
-    var authToken;
 
     var toggleAbstract = function(id) {
         $('#plus' + id).toggle();
@@ -93,10 +92,8 @@ var SciClipsSearchModule = (function(){
         url: searchURL,
         dataType: 'json',
         beforeSend: function (xhr) {
-            getToken();
             loadingSpinner.toggle();
             xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
-            xhr.setRequestHeader("Authorization", "OAuth " +authToken);
         }
     })
         .success(function (data) {
@@ -125,19 +122,6 @@ var SciClipsSearchModule = (function(){
                 return base + 'v' + vol + 'issue' + issue + '.html">Science Clips Volume ' + vol + ' Issue ' + issue +'</a>';
             }
         }
-    };
-
-    var getToken = function () {
-        var url = new URL(window.location);
-        $.ajax({
-            type: 'POST',
-            url: 'https://data.cdc.gov/oauth/access_token?client_id=1XGlTdFOCn5DilvbOnya6Je0P&client_secret=Tlnq7eQ9CzK2_s7d7-_F7dcPzW7rncnEp2b7&grant_type=authorization_code&code=' +url.searchParams.get("code")})
-            .success(function (token) {
-                authToken = token.access_token;
-            })
-            .fail(function () {
-                alert('fail');
-            });
     };
 
     var getSearchText = function () {
@@ -170,7 +154,6 @@ $(document).ready(function () {
         };
     };
     $('#search-button').click(function () {
-        //SciClipsSearchModule.getToken();
         search();
     });
     $('#search-text').keydown(function (event) {
