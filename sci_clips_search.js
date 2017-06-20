@@ -23,8 +23,8 @@ var SciClipsSearchModule = (function(){
     var searchURL;
     var loadingSpinner = $('#loading-spinner');
     var searchResultsContainer = $('#search-results-container');
-    var moreResultsButton = $('#load-more-search-results');
-    var authToken;
+    var prev25ResultsButton = $('#prev-25-search-results');
+    var next25ResultsButton = $('#next-25-search-results');
 
     var toggleAbstract = function(id) {
         $('#plus' + id).toggle();
@@ -33,13 +33,15 @@ var SciClipsSearchModule = (function(){
     };
 
     var resetSearch = function () {
-        searchText = "test";
+        searchText = "reset";
         offset = 0;
         searchResultsContainer.html("");
-        moreResultsButton.hide();
+        next25ResultsButton.hide();
+        prev25ResultsButton.hide();
     };
 
     var displaySearchResults = function(data) {
+        searchResultsContainer.html("");
         if(offset === 0) {
             if(data.length > 0) {
                 searchResultsContainer.append("<h3>Displaying results for <strong>" +searchText +"</strong>:</h3>");
@@ -51,12 +53,13 @@ var SciClipsSearchModule = (function(){
                 if(data.length < limit) {
                     searchResultsContainer.append("No additional results found.");
                 } else {
-                    moreResultsButton.show();
+                    next25ResultsButton.show();
                 }
             } else {
                 searchResultsContainer.html("No results found.");
             }
         } else {
+            prev25ResultsButton.show();
             if(data.length > 0) {
                 for(var i = 0; i < data.length; i++) {
                     //console.log(data[i]);
@@ -64,10 +67,10 @@ var SciClipsSearchModule = (function(){
                 }
             }
             if (data.length < limit) {
-                moreResultsButton.hide();
+                next25ResultsButton.hide();
                 searchResultsContainer.append("No additional results found.");
             } else {
-                moreResultsButton.show();
+                next25ResultsButton.show();
             }
         }
     };
@@ -93,10 +96,8 @@ var SciClipsSearchModule = (function(){
         url: searchURL,
         dataType: 'json',
         beforeSend: function (xhr) {
-            getToken();
             loadingSpinner.toggle();
             xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
-            xhr.setRequestHeader("Authorization", "OAuth " +authToken);
         }
     })
         .success(function (data) {
@@ -110,9 +111,16 @@ var SciClipsSearchModule = (function(){
         })
 };
    
-   var getMoreResults =  function () {
-       moreResultsButton.hide();
+   var getNext25Results =  function () {
+       prev25ResultsButton.hide();
+       next25ResultsButton.hide();
        offset = offset + limit;
+   };
+
+   var getPrev25Results = function () {
+       prev25ResultsButton.hide();
+       next25ResultsButton.hide();
+       offset = offset - limit;
    };
 
     var linkToIssue = function(data) {
@@ -125,19 +133,6 @@ var SciClipsSearchModule = (function(){
                 return base + 'v' + vol + 'issue' + issue + '.html">Science Clips Volume ' + vol + ' Issue ' + issue +'</a>';
             }
         }
-    };
-
-    var getToken = function () {
-        var url = new URL(window.location);
-        $.ajax({
-            type: 'POST',
-            url: 'https://data.cdc.gov/oauth/access_token?client_id=1XGlTdFOCn5DilvbOnya6Je0P&client_secret=Tlnq7eQ9CzK2_s7d7-_F7dcPzW7rncnEp2b7&grant_type=authorization_code&code=' +url.searchParams.get("code")})
-            .success(function (token) {
-                authToken = token.access_token;
-            })
-            .fail(function () {
-                alert('fail');
-            });
     };
 
     var getSearchText = function () {
@@ -153,7 +148,8 @@ var SciClipsSearchModule = (function(){
         getSearchText: getSearchText,
         resetSearch: resetSearch,
         performSearch: performSearch,
-        getMoreResults: getMoreResults,
+        getNext25Results: getNext25Results,
+        getPrev25Results: getPrev25Results,
         linkToIssue: linkToIssue,
         toggleAbstract: toggleAbstract,
     };
@@ -170,7 +166,6 @@ $(document).ready(function () {
         };
     };
     $('#search-button').click(function () {
-        //SciClipsSearchModule.getToken();
         search();
     });
     $('#search-text').keydown(function (event) {
@@ -178,8 +173,12 @@ $(document).ready(function () {
             search();
         }
     });
-    $('#load-more-search-results').click(function () {
-        SciClipsSearchModule.getMoreResults();
+    $('#next-25-search-results').click(function () {
+        SciClipsSearchModule.getNext25Results();
+        SciClipsSearchModule.performSearch();
+    });
+    $('#prev-25-search-results').click(function () {
+        SciClipsSearchModule.getPrev25Results();
         SciClipsSearchModule.performSearch();
     });
 });
