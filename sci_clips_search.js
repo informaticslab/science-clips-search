@@ -20,6 +20,7 @@ var SciClipsSearchModule = (function(){
     var offset = 0;
     var limit = 25;
     var baseSearchURL = 'https://data.cdc.gov/resource/d8c6-ee8v.json?';
+    var likeSearchString;
     var searchURL;
     var loadingSpinner = $('#loading-spinner');
     var searchResultsContainer = $('#search-results-container');
@@ -75,53 +76,59 @@ var SciClipsSearchModule = (function(){
         }
     };
 
+    var setupPagination = function (data) {
+
+
+    };
+
     var displayErrorMessage = function() {
 
         searchResultsContainer.html("An error has occurred.");
     };
 
-   var performSearch = function()
-   {
-       //console.log(searchText);
-       var searchParams = '$where=upper(abstract)%20like%20%27%25' + searchText.toUpperCase() +'%25%27'
-           +'%20OR%20upper(short_title)%20like%20%27%25' + searchText.toUpperCase() +'%25%27'
-           +'%20OR%20upper(author)%20like%20%27%25' + searchText.toUpperCase() +'%25%27'
-           +'%20&$order=record_number%20DESC'
-           +'%20&$limit=' + limit + '%20&$offset=' + offset;
+    var performSearch = function() {
+        likeSearchString = 'upper(abstract)%20like%20%27%25' + searchText.toUpperCase() +'%25%27'
+            +'%20OR%20upper(short_title)%20like%20%27%25' + searchText.toUpperCase() +'%25%27'
+            +'%20OR%20upper(author)%20like%20%27%25' + searchText.toUpperCase() +'%25%27';
 
-       searchURL = baseSearchURL + searchParams;
+        var orderString = '%20&$order=record_number%20DESC';
+        var limitString = '%20&$limit=' + limit;
+        var offsetString = '%20&$offset=' + offset;
 
-       $.ajax({
-        type: 'GET',
-        url: searchURL,
-        dataType: 'json',
-        beforeSend: function (xhr) {
-            loadingSpinner.toggle();
-            xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
-        }
-    })
-        .success(function (data) {
-            loadingSpinner.toggle();
-            //console.log(data);
-            displaySearchResults(data);
+        var searchParams = '$where=' +likeSearchString +orderString +limitString +offsetString;
+        searchURL = baseSearchURL + searchParams;
+
+        $.ajax({
+            type: 'GET',
+            url: searchURL,
+            dataType: 'json',
+            beforeSend: function (xhr) {
+                loadingSpinner.toggle();
+                xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
+            }
         })
-        .fail(function () {
-            loadingSpinner.toggle();
-            displayErrorMessage();
-        })
-};
-   
-   var getNext25Results =  function () {
-       prev25ResultsButton.hide();
-       next25ResultsButton.hide();
-       offset = offset + limit;
-   };
+            .success(function (data) {
+                loadingSpinner.toggle();
+                //console.log(data);
+                displaySearchResults(data);
+            })
+            .fail(function () {
+                loadingSpinner.toggle();
+                displayErrorMessage();
+            })
+    };
 
-   var getPrev25Results = function () {
-       prev25ResultsButton.hide();
-       next25ResultsButton.hide();
-       offset = offset - limit;
-   };
+    var getNext25Results =  function () {
+        prev25ResultsButton.hide();
+        next25ResultsButton.hide();
+        offset = offset + limit;
+    };
+
+    var getPrev25Results = function () {
+        prev25ResultsButton.hide();
+        next25ResultsButton.hide();
+        offset = offset - limit;
+    };
 
     var linkToIssue = function(data) {
         if (data) {
