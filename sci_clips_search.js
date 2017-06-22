@@ -19,6 +19,7 @@ var SciClipsSearchModule = (function(){
     var searchText;
     var offset = 0;
     var limit = 25;
+    var currentQueryRecordCount = 0;
     var baseSearchURL = 'https://data.cdc.gov/resource/d8c6-ee8v.json?';
     var likeSearchString;
     var searchURL;
@@ -36,6 +37,7 @@ var SciClipsSearchModule = (function(){
     var resetSearch = function () {
         searchText = "reset";
         offset = 0;
+        currentQueryRecordCount = 0;
         searchResultsContainer.html("");
         next25ResultsButton.hide();
         prev25ResultsButton.hide();
@@ -45,13 +47,13 @@ var SciClipsSearchModule = (function(){
         searchResultsContainer.html("");
         if(offset === 0) {
             if(data.length > 0) {
-                searchResultsContainer.append("<h3>Displaying results for <strong>" +searchText +"</strong>:</h3>");
+                searchResultsContainer.append("<h3>Displaying results " +(offset + 1) +" to " +(offset + data.length) +" of " +currentQueryRecordCount +" for <strong>" +searchText +"</strong>:</h3>");
                 for(var i = 0; i < data.length; i++) {
                     //console.log(data[i]);
                     searchResultsContainer.append(template({d: data[i]}));
                 }
 
-                if(data.length < limit) {
+                if(currentQueryRecordCount <= limit) {
                     searchResultsContainer.append("No additional results found.");
                 } else {
                     next25ResultsButton.show();
@@ -62,18 +64,19 @@ var SciClipsSearchModule = (function(){
         } else {
             prev25ResultsButton.show();
             if(data.length > 0) {
+                searchResultsContainer.append("<h3>Displaying results " +(offset + 1) +" to " +(offset + data.length) +" of " +currentQueryRecordCount +" for <strong>" +searchText +"</strong>:</h3>");
                 for(var i = 0; i < data.length; i++) {
                     //console.log(data[i]);
                     searchResultsContainer.append(template({d: data[i]}));
                 }
             }
-            if (data.length < limit) {
+            if (currentQueryRecordCount - offset <= limit) {
                 next25ResultsButton.hide();
-                searchResultsContainer.append("No additional results found.");
             } else {
                 next25ResultsButton.show();
             }
         }
+        $("html, body").animate({ scrollTop: 0 }, 0);
     };
 
     var setupPagination = function (data) {
@@ -87,35 +90,71 @@ var SciClipsSearchModule = (function(){
     };
 
     var performSearch = function() {
-        likeSearchString = 'upper(abstract)%20like%20%27%25' + searchText.toUpperCase() +'%25%27'
-            +'%20OR%20upper(short_title)%20like%20%27%25' + searchText.toUpperCase() +'%25%27'
-            +'%20OR%20upper(author)%20like%20%27%25' + searchText.toUpperCase() +'%25%27';
+        likeSearchString = 'upper(abstract)%20like%20%27%25' + searchText.toUpperCase() + '%25%27'
+            + '%20OR%20upper(short_title)%20like%20%27%25' + searchText.toUpperCase() + '%25%27'
+            + '%20OR%20upper(author)%20like%20%27%25' + searchText.toUpperCase() + '%25%27';
 
         var orderString = '%20&$order=record_number%20DESC';
         var limitString = '%20&$limit=' + limit;
         var offsetString = '%20&$offset=' + offset;
 
-        var searchParams = '$where=' +likeSearchString +orderString +limitString +offsetString;
+        var searchParams = '$where=' + likeSearchString + orderString + limitString + offsetString;
         searchURL = baseSearchURL + searchParams;
 
-        $.ajax({
-            type: 'GET',
-            url: searchURL,
-            dataType: 'json',
-            beforeSend: function (xhr) {
-                loadingSpinner.toggle();
-                xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
-            }
-        })
-            .success(function (data) {
-                loadingSpinner.toggle();
-                //console.log(data);
-                displaySearchResults(data);
+        var countURL = baseSearchURL + "$select=sum(case(" + likeSearchString + ",%201,%20false,%200))%20as%20count";
+
+        loadingSpinner.toggle();
+
+        if (offset === 0) {
+            $.ajax({
+                type: 'GET',
+                url: countURL,
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
+                }
             })
-            .fail(function () {
-                loadingSpinner.toggle();
-                displayErrorMessage();
+                .success(function (data) {
+                    currentQueryRecordCount = data[0].count;
+                    $.ajax({
+                        type: 'GET',
+                        url: searchURL,
+                        dataType: 'json',
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
+                        }
+                    })
+                        .success(function (data) {
+                            loadingSpinner.toggle();
+                            displaySearchResults(data)
+                        })
+                        .fail(function () {
+                            loadingSpinner.toggle();
+                            displayErrorMessage();
+                        })
+                })
+                .fail(function () {
+                    loadingSpinner.toggle();
+                    displayErrorMessage();
+                })
+        } else {
+            $.ajax({
+                type: 'GET',
+                url: searchURL,
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
+                }
             })
+                .success(function (data) {
+                    loadingSpinner.toggle();
+                    displaySearchResults(data)
+                })
+                .fail(function () {
+                    loadingSpinner.toggle();
+                    displayErrorMessage();
+                })
+        }
     };
 
     var getNext25Results =  function () {
