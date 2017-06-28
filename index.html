@@ -295,65 +295,35 @@
                 <!-- body -->
                 <div id="body" class="span19">
                     <div id="contentArea">
-                        <div>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="search-text" placeholder="Search for...">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-primary" id="search-button" type="button">Go!</button>
-                                </span>
+                        <div class="span19">
+
+                            <div>
+                                <div class="form-group">
+                                    <label for="search-text">Title and abstract:</label>
+                                    <input type="text" class="form-control input-xxlarge sci-clips-search-input" id="search-text"
+                                           name="search-text" placeholder="Search in title and abstract..."
+                                           title="Search in title and abstract..." maxlength="80">
+                                    <label for="author-text">Author:</label>
+                                    <input type="text" class="form-control input-xxlarge sci-clips-search-input" id="author-text"
+                                           name="author-text" placeholder="Search for author..."
+                                           title="Search for author..." maxlength="80">
+                                    <label for="topic-heading-text">Topic heading:</label>
+                                    <input type="text" class="form-control input-xxlarge sci-clips-search-input" id="topic-heading-text"
+                                           name="topic-heading-text" placeholder="Search for topic heading..."
+                                           title="Search for topic heading..." maxlength="80">
+                                    <div class="form-actions">
+                                        <button class="btn btn-primary pull-right" id="search-button" type="button">Search</button>
+                                    </div>
+                                </div>
+                              </div>
+                            <div id="search-results-container"></div>
+                            <br/>
+                            <i id="loading-spinner" class="spinner icon-spinner icon-spin" style="display:none;"></i>
+                            <div id="search-results-control-panel" class="form-actions" style="display:none;">
+                                <button class="btn btn-primary" id="prev-25-search-results" style="display: none">Previous 25</button>
+                                <button class="btn btn-primary pull-right" id="next-25-search-results" style="display: none">Next 25</button>
                             </div>
                         </div>
-                        <div id="search-results-container"></div>
-                        <br/>
-                        <!--<nav id="multiPagePaginator">
-                            <div class="mp-pagination hidden-one">
-                                <ul>
-                                    <li id="paginationPrevious" style="display: none;">
-                                        <a href="#" class="tp-link-policy selected"><em class="icon-chevron-left"></em>
-                                            <span class="print-only">(https://)</span>
-                                        </a>
-                                    </li>
-                                    <li id="paginationOne" style="display: none;">
-                                        <a href="#" class="tp-link-policy selected">1
-                                            <span class="print-only">(https://)</span>
-                                        </a>
-                                    </li>
-                                    <li id="paginationTwo" style="display: none;">
-                                        <a href="#" class="tp-link-policy selected">2
-                                            <span class="print-only">(https://)</span>
-                                        </a>
-                                    </li>
-                                    <li id="paginationThree" style="display: none;">
-                                        <a href="#" class="tp-link-policy selected">3
-                                            <span class="print-only">(https://)</span>
-                                        </a>
-                                    </li>
-                                    <li id="paginationFour" style="display: none;">
-                                        <a href="#" class="tp-link-policy selected">4
-                                            <span class="print-only">(https://)</span>
-                                        </a>
-                                    </li>
-                                    <li id="paginationFive" style="display: none;" >
-                                        <a href="#" class="tp-link-policy selected">5
-                                            <span class="print-only">(https://)</span>
-                                        </a>
-                                    </li>
-                                    <li id="paginationSix" style="display: none;">
-                                        <a href="#" class="tp-link-policy selected">6
-                                            <span class="print-only">(https://)</span>
-                                        </a>
-                                    </li>
-                                    <li id="paginationNext" style="display: none;">
-                                        <a href="#" class="tp-link-policy selected"><em class="icon-chevron-right"></em>
-                                            <span class="print-only">(https://)</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </nav> -->
-                            <button class="btn btn-primary" id="prev-25-search-results" style="display: none">Previous 25</button>
-                            <button class="btn btn-primary pull-right" id="next-25-search-results" style="display: none">Next 25</button>
-                            <i id="loading-spinner" class="spinner icon-spinner icon-spin" style="display:none;"></i>
                     </div>
 
                         <!-- Related Nav Area -->

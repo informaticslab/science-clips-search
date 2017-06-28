@@ -7,6 +7,7 @@ var SciClipsSearchModule = (function(){
         + '<% if(d.author){print(d.author +"<br/>")}%>'
         + '<% if(d.secondary_title){print(d.secondary_title +". ")}%><% if(d.year){print(d.year +" ")}%><% if(d.date){print(d.date +";")}%><% if(d.volume){print(d.volume +":")}%><% if(d.pages){print(d.pages +".")}%>' + '<% print("("+SciClipsSearchModule.linkToIssue(d.custom_8)+")")%>'
         + '<br/>'
+        + '<% if(d.custom_2){print(d.custom_2 +"<br/>")}%>'
         + '<% if(d.abstract){%>'
         + '<a id="plus<%=d.record_number%>" href="javascript:SciClipsSearchModule.toggleAbstract(<%=d.record_number%>)">[+]Show Abstract</a>'
         + '<a style="display:none" id="minus<%=d.record_number%>" href="javascript:SciClipsSearchModule.toggleAbstract(<%=d.record_number%>)">[-]Hide Abstract</a>'
@@ -16,7 +17,9 @@ var SciClipsSearchModule = (function(){
         + '</ul>'
     );
 
-    var searchText;
+    var titleAndAbstractSearchText = "null";
+    var authorSearchText = "null";
+    var topicHeadingSearchText ="null";
     var offset = 0;
     var limit = 25;
     var currentQueryRecordCount = 0;
@@ -27,6 +30,7 @@ var SciClipsSearchModule = (function(){
     var searchResultsContainer = $('#search-results-container');
     var prev25ResultsButton = $('#prev-25-search-results');
     var next25ResultsButton = $('#next-25-search-results');
+    var searchResultsControlPanel = $('#search-results-control-panel');
 
     var toggleAbstract = function(id) {
         $('#plus' + id).toggle();
@@ -35,19 +39,22 @@ var SciClipsSearchModule = (function(){
     };
 
     var resetSearch = function () {
-        searchText = "reset";
+        //searchText = "reset";
         offset = 0;
         currentQueryRecordCount = 0;
         searchResultsContainer.html("");
+        searchResultsControlPanel.hide();
         next25ResultsButton.hide();
         prev25ResultsButton.hide();
     };
 
     var displaySearchResults = function(data) {
         searchResultsContainer.html("");
+        if(data.length > 0) {
+            searchResultsContainer.append("<h3>Displaying results " +(offset + 1) +" to " +(offset + data.length) +" of " +currentQueryRecordCount +":</h3>");
+        }
         if(offset === 0) {
             if(data.length > 0) {
-                searchResultsContainer.append("<h3>Displaying results " +(offset + 1) +" to " +(offset + data.length) +" of " +currentQueryRecordCount +" for <strong>" +searchText +"</strong>:</h3>");
                 for(var i = 0; i < data.length; i++) {
                     //console.log(data[i]);
                     searchResultsContainer.append(template({d: data[i]}));
@@ -57,14 +64,15 @@ var SciClipsSearchModule = (function(){
                     searchResultsContainer.append("No additional results found.");
                 } else {
                     next25ResultsButton.show();
+                    searchResultsControlPanel.show();
                 }
             } else {
                 searchResultsContainer.html("No results found.");
             }
         } else {
             prev25ResultsButton.show();
+            searchResultsControlPanel.show();
             if(data.length > 0) {
-                searchResultsContainer.append("<h3>Displaying results " +(offset + 1) +" to " +(offset + data.length) +" of " +currentQueryRecordCount +" for <strong>" +searchText +"</strong>:</h3>");
                 for(var i = 0; i < data.length; i++) {
                     //console.log(data[i]);
                     searchResultsContainer.append(template({d: data[i]}));
@@ -76,12 +84,7 @@ var SciClipsSearchModule = (function(){
                 next25ResultsButton.show();
             }
         }
-        $("html, body").animate({ scrollTop: 0 }, 0);
-    };
-
-    var setupPagination = function (data) {
-
-
+        $(document).scrollTop($("#search-results-container").offset().top);
     };
 
     var displayErrorMessage = function() {
@@ -90,9 +93,10 @@ var SciClipsSearchModule = (function(){
     };
 
     var performSearch = function() {
-        likeSearchString = 'upper(abstract)%20like%20%27%25' + searchText.toUpperCase() + '%25%27'
-            + '%20OR%20upper(short_title)%20like%20%27%25' + searchText.toUpperCase() + '%25%27'
-            + '%20OR%20upper(author)%20like%20%27%25' + searchText.toUpperCase() + '%25%27';
+        likeSearchString = '(upper(abstract)%20like%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27'
+            + '%20OR%20upper(short_title)%20like%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27)'
+            + (authorSearchText.length > 0 ? '%20AND%20upper(author)%20like%20%27%25' + authorSearchText.toUpperCase() + '%25%27' : '')
+            + (topicHeadingSearchText.length > 0 ? '%20AND%20upper(custom_2)%20like%20%27%25' + topicHeadingSearchText.toUpperCase() +'%25%27' : '');
 
         var orderString = '%20&$order=record_number%20DESC';
         var limitString = '%20&$limit=' + limit;
@@ -160,12 +164,14 @@ var SciClipsSearchModule = (function(){
     var getNext25Results =  function () {
         prev25ResultsButton.hide();
         next25ResultsButton.hide();
+        searchResultsControlPanel.hide();
         offset = offset + limit;
     };
 
     var getPrev25Results = function () {
         prev25ResultsButton.hide();
         next25ResultsButton.hide();
+        searchResultsControlPanel.hide();
         offset = offset - limit;
     };
 
@@ -182,11 +188,17 @@ var SciClipsSearchModule = (function(){
     };
 
     var getSearchText = function () {
-        return searchText;
+        return {
+            titleAndAbstractSearchText: titleAndAbstractSearchText,
+            authorSearchText: authorSearchText,
+            topicHeadingSearchText: topicHeadingSearchText
+        };
     };
 
     var setSearchText = function (text) {
-        searchText = text;
+        titleAndAbstractSearchText = text.titleAndAbstractSearchText;
+        authorSearchText = text.authorSearchText;
+        topicHeadingSearchText = text.topicHeadingSearchText;
     };
 
     return {
@@ -204,17 +216,29 @@ var SciClipsSearchModule = (function(){
 
 $(document).ready(function () {
     var search = function () {
-        var text = $('#search-text').val();
-        if(text !== SciClipsSearchModule.getSearchText()) {
+        var titleAndAbstractSearchText = $('#search-text').val();
+        var authorSearchText = $('#author-text').val();
+        var topicHeadingSearchText = $('#topic-heading-text').val();
+        var searchText = SciClipsSearchModule.getSearchText();
+
+        if(titleAndAbstractSearchText !== searchText.titleAndAbstractSearchText
+            || authorSearchText !== searchText.authorSearchText
+            || topicHeadingSearchText !== searchText.topicHeadingSearchText) {
             SciClipsSearchModule.resetSearch();
-            SciClipsSearchModule.setSearchText(text);
+            SciClipsSearchModule.setSearchText(
+                {
+                    titleAndAbstractSearchText: titleAndAbstractSearchText,
+                    authorSearchText: authorSearchText,
+                    topicHeadingSearchText: topicHeadingSearchText
+                }
+            );
             SciClipsSearchModule.performSearch();
-        };
+        }
     };
     $('#search-button').click(function () {
         search();
     });
-    $('#search-text').keydown(function (event) {
+    $('.sci-clips-search-input').keydown(function (event) {
         if(event.keyCode === 13){
             search();
         }
