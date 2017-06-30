@@ -297,7 +297,7 @@
                     <div id="contentArea">
                         <div class="span19">
 
-                            <div>
+                            <form id="science-clips-search-form">
                                 <div class="controls">
                                     <label for="search-text" class="screen-reader-only">Title and abstract:</label>
                                     <input type="text" class="form-control span19 sci-clips-search-input" id="search-text"
@@ -337,10 +337,11 @@
 
                                     <a href="javascript:SciClipsSearchModule.toggleAdvancedSearch();">Advanced search</a>
                                     <div class="form-actions">
-                                        <button class="btn btn-primary pull-right" id="search-button" type="button">Search</button>
+                                        <button class="btn btn-primary" id="search-button" type="button">Search</button>
+                                        <button class="btn" type="reset">Clear Form</button>
                                     </div>
                                 </div>
-                              </div>
+                              </form>
                             <div id="search-results-container"></div>
                             <br/>
                             <i id="loading-spinner" class="spinner icon-spinner icon-spin" style="display:none;"></i>

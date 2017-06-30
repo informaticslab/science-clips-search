@@ -232,6 +232,8 @@ var SciClipsSearchModule = (function(){
 
 
 $(document).ready(function () {
+    $('#science-clips-search-form').trigger('reset');
+
     var search = function () {
         var titleAndAbstractSearchText = $('#search-text').val();
         var authorSearchText = $('#author-text').val();
