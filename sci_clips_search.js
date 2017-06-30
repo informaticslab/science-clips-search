@@ -7,6 +7,7 @@ var SciClipsSearchModule = (function(){
         + '<% if(d.author){print(d.author +"<br/>")}%>'
         + '<% if(d.secondary_title){print(d.secondary_title +". ")}%><% if(d.year){print(d.year +" ")}%><% if(d.date){print(d.date +";")}%><% if(d.volume){print(d.volume +":")}%><% if(d.pages){print(d.pages +".")}%>' + '<% print("("+SciClipsSearchModule.linkToIssue(d.custom_8)+")")%>'
         + '<br/>'
+        + '<% if(d.custom_2){print(d.custom_2 +"<br/>")}%>'
         + '<% if(d.abstract){%>'
         + '<a id="plus<%=d.record_number%>" href="javascript:SciClipsSearchModule.toggleAbstract(<%=d.record_number%>)">[+]Show Abstract</a>'
         + '<a style="display:none" id="minus<%=d.record_number%>" href="javascript:SciClipsSearchModule.toggleAbstract(<%=d.record_number%>)">[-]Hide Abstract</a>'
@@ -16,14 +17,23 @@ var SciClipsSearchModule = (function(){
         + '</ul>'
     );
 
-    var searchText;
+    var titleAndAbstractSearchText;
+    var volumeIssueText;
+    var authorSearchText;
+    var publicationYearFrom;
+    var publicationYearTo;
+    var topicHeadingSearchText;
     var offset = 0;
     var limit = 25;
+    var currentQueryRecordCount = 0;
     var baseSearchURL = 'https://data.cdc.gov/resource/d8c6-ee8v.json?';
+    var likeSearchString;
     var searchURL;
     var loadingSpinner = $('#loading-spinner');
     var searchResultsContainer = $('#search-results-container');
-    var moreResultsButton = $('#load-more-search-results');
+    var prev25ResultsButton = $('#prev-25-search-results');
+    var next25ResultsButton = $('#next-25-search-results');
+    var searchResultsControlPanel = $('#search-results-control-panel');
 
     var toggleAbstract = function(id) {
         $('#plus' + id).toggle();
@@ -32,43 +42,52 @@ var SciClipsSearchModule = (function(){
     };
 
     var resetSearch = function () {
-        searchText = "test";
+        //searchText = "reset";
         offset = 0;
+        currentQueryRecordCount = 0;
         searchResultsContainer.html("");
-        moreResultsButton.hide();
+        searchResultsControlPanel.hide();
+        next25ResultsButton.hide();
+        prev25ResultsButton.hide();
     };
 
     var displaySearchResults = function(data) {
+        searchResultsContainer.html("");
+        if(data.length > 0) {
+            searchResultsContainer.append("<h3>Displaying results " +(offset + 1) +" to " +(offset + data.length) +" of " +currentQueryRecordCount +":</h3>");
+        }
         if(offset === 0) {
             if(data.length > 0) {
-                searchResultsContainer.append("<h3>Displaying results for <strong>" +searchText +"</strong>:</h3>");
                 for(var i = 0; i < data.length; i++) {
                     //console.log(data[i]);
                     searchResultsContainer.append(template({d: data[i]}));
                 }
 
-                if(data.length < limit) {
+                if(currentQueryRecordCount <= limit) {
                     searchResultsContainer.append("No additional results found.");
                 } else {
-                    moreResultsButton.show();
+                    next25ResultsButton.show();
+                    searchResultsControlPanel.show();
                 }
             } else {
                 searchResultsContainer.html("No results found.");
             }
         } else {
+            prev25ResultsButton.show();
+            searchResultsControlPanel.show();
             if(data.length > 0) {
                 for(var i = 0; i < data.length; i++) {
                     //console.log(data[i]);
                     searchResultsContainer.append(template({d: data[i]}));
                 }
             }
-            if (data.length < limit) {
-                moreResultsButton.hide();
-                searchResultsContainer.append("No additional results found.");
+            if (currentQueryRecordCount - offset <= limit) {
+                next25ResultsButton.hide();
             } else {
-                moreResultsButton.show();
+                next25ResultsButton.show();
             }
         }
+        $(document).scrollTop($("#search-results-container").offset().top);
     };
 
     var displayErrorMessage = function() {
@@ -76,41 +95,91 @@ var SciClipsSearchModule = (function(){
         searchResultsContainer.html("An error has occurred.");
     };
 
-   var performSearch = function()
-   {
-       //console.log(searchText);
-       var searchParams = '$where=upper(abstract)%20like%20%27%25' + searchText.toUpperCase() +'%25%27'
-           +'%20OR%20upper(short_title)%20like%20%27%25' + searchText.toUpperCase() +'%25%27'
-           +'%20OR%20upper(author)%20like%20%27%25' + searchText.toUpperCase() +'%25%27'
-           +'%20&$order=record_number%20DESC'
-           +'%20&$limit=' + limit + '%20&$offset=' + offset;
+    var performSearch = function() {
+        likeSearchString = '(UPPER(abstract)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27'
+            + '%20OR%20UPPER(short_title)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27)'
+            + (volumeIssueText.length > 0 ? '%20AND%20custom_8%20LIKE%20%27%25' + volumeIssueText + '%25%27' : '')
+            + (authorSearchText.length > 0 ? '%20AND%20UPPER(author)%20LIKE%20%27%25' + authorSearchText.toUpperCase() + '%25%27' : '')
+            + (publicationYearFrom.length > 0 ? '%20AND%20year>=' +publicationYearFrom : '')
+            + (publicationYearTo.length > 0 ? '%20AND%20year<=' +publicationYearTo : '')
+            + (topicHeadingSearchText.length > 0 ? '%20AND%20UPPER(custom_2)%20LIKE%20%27%25' + topicHeadingSearchText.toUpperCase() +'%25%27' : '');
 
-       searchURL = baseSearchURL + searchParams;
+        var orderString = '%20&$ORDER=record_number%20DESC';
+        var limitString = '%20&$LIMIT=' + limit;
+        var offsetString = '%20&$OFFSET=' + offset;
 
-       $.ajax({
-        type: 'GET',
-        url: searchURL,
-        dataType: 'json',
-        beforeSend: function (xhr) {
-            loadingSpinner.toggle();
-            xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
+        var searchParams = '$WHERE=' + likeSearchString + orderString + limitString + offsetString;
+        searchURL = baseSearchURL + searchParams;
+
+        var countURL = baseSearchURL + "$SELECT=SUM(CASE(" + likeSearchString + ",%201,%20FALSE,%200))%20AS%20count";
+
+        loadingSpinner.toggle();
+
+        if (offset === 0) {
+            $.ajax({
+                type: 'GET',
+                url: countURL,
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
+                }
+            })
+                .success(function (data) {
+                    currentQueryRecordCount = data[0].count;
+                    $.ajax({
+                        type: 'GET',
+                        url: searchURL,
+                        dataType: 'json',
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
+                        }
+                    })
+                        .success(function (data) {
+                            loadingSpinner.toggle();
+                            displaySearchResults(data)
+                        })
+                        .fail(function () {
+                            loadingSpinner.toggle();
+                            displayErrorMessage();
+                        })
+                })
+                .fail(function () {
+                    loadingSpinner.toggle();
+                    displayErrorMessage();
+                })
+        } else {
+            $.ajax({
+                type: 'GET',
+                url: searchURL,
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-APP-TOKEN", "1XGlTdFOCn5DilvbOnya6Je0P");
+                }
+            })
+                .success(function (data) {
+                    loadingSpinner.toggle();
+                    displaySearchResults(data)
+                })
+                .fail(function () {
+                    loadingSpinner.toggle();
+                    displayErrorMessage();
+                })
         }
-    })
-        .success(function (data) {
-            loadingSpinner.toggle();
-            //console.log(data);
-            displaySearchResults(data);
-        })
-        .fail(function () {
-            loadingSpinner.toggle();
-            displayErrorMessage();
-        })
-};
-   
-   var getMoreResults =  function () {
-       moreResultsButton.hide();
-       offset = offset + limit;
-   };
+    };
+
+    var getNext25Results =  function () {
+        prev25ResultsButton.hide();
+        next25ResultsButton.hide();
+        searchResultsControlPanel.hide();
+        offset = offset + limit;
+    };
+
+    var getPrev25Results = function () {
+        prev25ResultsButton.hide();
+        next25ResultsButton.hide();
+        searchResultsControlPanel.hide();
+        offset = offset - limit;
+    };
 
     var linkToIssue = function(data) {
         if (data) {
@@ -125,11 +194,27 @@ var SciClipsSearchModule = (function(){
     };
 
     var getSearchText = function () {
-        return searchText;
+        return {
+            titleAndAbstractSearchText: titleAndAbstractSearchText,
+            volumeIssueText: volumeIssueText,
+            authorSearchText: authorSearchText,
+            publicationYearFrom: publicationYearFrom,
+            publicationYearTo: publicationYearTo,
+            topicHeadingSearchText: topicHeadingSearchText
+        };
     };
 
     var setSearchText = function (text) {
-        searchText = text;
+        titleAndAbstractSearchText = text.titleAndAbstractSearchText;
+        volumeIssueText = text.volumeIssueText;
+        authorSearchText = text.authorSearchText;
+        publicationYearFrom = text.publicationYearFrom;
+        publicationYearTo = text.publicationYearTo;
+        topicHeadingSearchText = text.topicHeadingSearchText;
+    };
+
+    var toggleAdvancedSearch = function () {
+        $('.sci-clips-advanced-search').toggle();
     };
 
     return {
@@ -137,32 +222,62 @@ var SciClipsSearchModule = (function(){
         getSearchText: getSearchText,
         resetSearch: resetSearch,
         performSearch: performSearch,
-        getMoreResults: getMoreResults,
+        getNext25Results: getNext25Results,
+        getPrev25Results: getPrev25Results,
         linkToIssue: linkToIssue,
         toggleAbstract: toggleAbstract,
+        toggleAdvancedSearch: toggleAdvancedSearch
     };
 })();
 
 
 $(document).ready(function () {
     var search = function () {
-        var text = $('#search-text').val();
-        if(text !== SciClipsSearchModule.getSearchText()) {
+        var titleAndAbstractSearchText = $('#search-text').val();
+        var authorSearchText = $('#author-text').val();
+        var topicHeadingSearchText = $('#topic-heading-text').val();
+        var volume = $('#science-clips-volume').val();
+        var issue = $('#science-clips-issue').val();
+        var volumeIssueText =  (volume.length > 0 || issue.length > 0) ? volume +':' +issue : '';
+        var publicationYearTo = $('#publication-year-to').val();
+        var publicationYearFrom = $('#publication-year-from').val();
+
+        var searchText = SciClipsSearchModule.getSearchText();
+
+        if(titleAndAbstractSearchText !== searchText.titleAndAbstractSearchText
+            || volumeIssueText !== searchText.volumeIssueText
+            || authorSearchText !== searchText.authorSearchText
+            || publicationYearTo!== searchText.publicationYearTo
+            || publicationYearFrom !== searchText.publicationYearFrom
+            || topicHeadingSearchText !== searchText.topicHeadingSearchText) {
             SciClipsSearchModule.resetSearch();
-            SciClipsSearchModule.setSearchText(text);
+            SciClipsSearchModule.setSearchText(
+                {
+                    titleAndAbstractSearchText: titleAndAbstractSearchText,
+                    volumeIssueText: volumeIssueText,
+                    authorSearchText: authorSearchText,
+                    publicationYearTo: publicationYearTo,
+                    publicationYearFrom: publicationYearFrom,
+                    topicHeadingSearchText: topicHeadingSearchText
+                }
+            );
             SciClipsSearchModule.performSearch();
-        };
+        }
     };
     $('#search-button').click(function () {
         search();
     });
-    $('#search-text').keydown(function (event) {
+    $('.sci-clips-search-input').keydown(function (event) {
         if(event.keyCode === 13){
             search();
         }
     });
-    $('#load-more-search-results').click(function () {
-        SciClipsSearchModule.getMoreResults();
+    $('#next-25-search-results').click(function () {
+        SciClipsSearchModule.getNext25Results();
+        SciClipsSearchModule.performSearch();
+    });
+    $('#prev-25-search-results').click(function () {
+        SciClipsSearchModule.getPrev25Results();
         SciClipsSearchModule.performSearch();
     });
 });

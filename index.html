@@ -295,21 +295,61 @@
                 <!-- body -->
                 <div id="body" class="span19">
                     <div id="contentArea">
-                        <a href="https://data.cdc.gov/oauth/authorize?client_id=1XGlTdFOCn5DilvbOnya6Je0P&response_type=code">Authenticate</a>
-                        <div>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="search-text" placeholder="Search for...">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-primary" id="search-button" type="button">Go!</button>
-                                </span>
+                        <div class="span19">
+
+                            <div>
+                                <div class="controls">
+                                    <label for="search-text" class="screen-reader-only">Title and abstract:</label>
+                                    <input type="text" class="form-control span19 sci-clips-search-input" id="search-text"
+                                           name="search-text" placeholder="Search in title and abstract..."
+                                           title="Search in title and abstract..." maxlength="80">
+                                    <label for="author-text" class="sci-clips-advanced-search screen-reader-only" style="display: none">Author:</label>
+                                    <input type="text" class="form-control span19 sci-clips-search-input sci-clips-advanced-search" id="author-text"
+                                           name="author-text" placeholder="Search for author..."
+                                           title="Search for author..." maxlength="80" style="display: none">
+
+                                    <label for="topic-heading-text" class="sci-clips-advanced-search screen-reader-only" style="display: none">Topic heading:</label>
+                                    <input type="text" class="form-control sci-clips-search-input sci-clips-advanced-search span19" id="topic-heading-text"
+                                           name="topic-heading-text" placeholder="Search for topic heading..."
+                                           title="Search for topic heading..." maxlength="80" style="display: none">
+                                    <div class="controls-row">
+                                        <label for="science-clips-volume" class="sci-clips-advanced-search screen-reader-only" style="display: none">Volume:</label>
+                                        <input type="number" class="sci-clips-search-input sci-clips-advanced-search span4" id="science-clips-volume"
+                                               name="science-clips-volume" placeholder="Volume"
+                                               title="Volume" min="1" max="999" style="display: none">
+                                        <label for="science-clips-issue" class="sci-clips-advanced-search screen-reader-only" style="display: none">Issue:</label>
+                                        <input type="number" class="sci-clips-search-input sci-clips-advanced-search span4" id="science-clips-issue"
+                                               name="science-clips-issue" placeholder="Issue"
+                                               title="Issue" min="1" max="52" style="display: none">
+                                    </div>
+                                    <div class="controls-row">
+                                        <label for="publication-year-from" class="sci-clips-advanced-search screen-reader-only" style="display:none;">From year</label>
+                                        <input type="number" class="sci-clips-search-input sci-clips-advanced-search span4" id="publication-year-from"
+                                               name="publication-year-from" placeholder="From year"
+                                               title="From year" min="1" max="2999" style="display: none">
+
+                                        <label for="publication-year-to" class="sci-clips-advanced-search screen-reader-only" style="display: none">To year</label>
+                                        <input type="number" class="sci-clips-search-input sci-clips-advanced-search span4" id="publication-year-to"
+                                               name="publication-year-to" placeholder="To year"
+                                               title="To year" min="1" max="2999" style="display: none">
+
+                                    </div>
+
+                                    <a href="javascript:SciClipsSearchModule.toggleAdvancedSearch();">Advanced search</a>
+                                    <div class="form-actions">
+                                        <button class="btn btn-primary pull-right" id="search-button" type="button">Search</button>
+                                    </div>
+                                </div>
+                              </div>
+                            <div id="search-results-container"></div>
+                            <br/>
+                            <i id="loading-spinner" class="spinner icon-spinner icon-spin" style="display:none;"></i>
+                            <div id="search-results-control-panel" class="form-actions" style="display:none;">
+                                <button class="btn btn-primary" id="prev-25-search-results" style="display: none">Previous 25</button>
+                                <button class="btn btn-primary pull-right" id="next-25-search-results" style="display: none">Next 25</button>
                             </div>
                         </div>
-                        <div id="search-results-container"></div>
-                        <br/>
-                        <div>
-                            <button class="btn btn-primary" id="load-more-search-results" style="display: none">Load More</button>
-                            <i id="loading-spinner" class="spinner icon-spinner icon-spin" style="display:none;"></i>
-                        </div>
+                    </div>
 
                         <!-- Related Nav Area -->
                         <div class="nav-related hidden-three hidden-four">
@@ -478,7 +518,7 @@
         </div>
     </footer>	<!-- /#footer -->
     <div id="totop" class="off visible-one">TOP</div>
-</div>
+
 
 <script>page_timing.libs_start = Date.now();</script><script src="/TemplatePackage/3.0/js/libs.min.js?3.2.3.1"></script><script>page_timing.libs_end = Date.now();page_timing.core_start = Date.now();</script><script src="/TemplatePackage/3.0/js/core.min.js?3.2.3.1"></script><script>page_timing.core_end = Date.now();</script>
 <script>
