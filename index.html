@@ -298,19 +298,44 @@
                         <div class="span19">
 
                             <div>
-                                <div class="form-group">
-                                    <label for="search-text">Title and abstract:</label>
-                                    <input type="text" class="form-control input-xxlarge sci-clips-search-input" id="search-text"
+                                <div class="controls">
+                                    <label for="search-text" class="screen-reader-only">Title and abstract:</label>
+                                    <input type="text" class="form-control span19 sci-clips-search-input" id="search-text"
                                            name="search-text" placeholder="Search in title and abstract..."
                                            title="Search in title and abstract..." maxlength="80">
-                                    <label for="author-text">Author:</label>
-                                    <input type="text" class="form-control input-xxlarge sci-clips-search-input" id="author-text"
+                                    <label for="author-text" class="sci-clips-advanced-search screen-reader-only" style="display: none">Author:</label>
+                                    <input type="text" class="form-control span19 sci-clips-search-input sci-clips-advanced-search" id="author-text"
                                            name="author-text" placeholder="Search for author..."
-                                           title="Search for author..." maxlength="80">
-                                    <label for="topic-heading-text">Topic heading:</label>
-                                    <input type="text" class="form-control input-xxlarge sci-clips-search-input" id="topic-heading-text"
+                                           title="Search for author..." maxlength="80" style="display: none">
+
+                                    <label for="topic-heading-text" class="sci-clips-advanced-search screen-reader-only" style="display: none">Topic heading:</label>
+                                    <input type="text" class="form-control sci-clips-search-input sci-clips-advanced-search span19" id="topic-heading-text"
                                            name="topic-heading-text" placeholder="Search for topic heading..."
-                                           title="Search for topic heading..." maxlength="80">
+                                           title="Search for topic heading..." maxlength="80" style="display: none">
+                                    <div class="controls-row">
+                                        <label for="science-clips-volume" class="sci-clips-advanced-search screen-reader-only" style="display: none">Volume:</label>
+                                        <input type="number" class="sci-clips-search-input sci-clips-advanced-search span4" id="science-clips-volume"
+                                               name="science-clips-volume" placeholder="Volume"
+                                               title="Volume" min="1" max="999" style="display: none">
+                                        <label for="science-clips-issue" class="sci-clips-advanced-search screen-reader-only" style="display: none">Issue:</label>
+                                        <input type="number" class="sci-clips-search-input sci-clips-advanced-search span4" id="science-clips-issue"
+                                               name="science-clips-issue" placeholder="Issue"
+                                               title="Issue" min="1" max="52" style="display: none">
+                                    </div>
+                                    <div class="controls-row">
+                                        <label for="publication-year-from" class="sci-clips-advanced-search screen-reader-only" style="display:none;">From year</label>
+                                        <input type="number" class="sci-clips-search-input sci-clips-advanced-search span4" id="publication-year-from"
+                                               name="publication-year-from" placeholder="From year"
+                                               title="From year" min="1" max="2999" style="display: none">
+
+                                        <label for="publication-year-to" class="sci-clips-advanced-search screen-reader-only" style="display: none">To year</label>
+                                        <input type="number" class="sci-clips-search-input sci-clips-advanced-search span4" id="publication-year-to"
+                                               name="publication-year-to" placeholder="To year"
+                                               title="To year" min="1" max="2999" style="display: none">
+
+                                    </div>
+
+                                    <a href="javascript:SciClipsSearchModule.toggleAdvancedSearch();">Advanced search</a>
                                     <div class="form-actions">
                                         <button class="btn btn-primary pull-right" id="search-button" type="button">Search</button>
                                     </div>

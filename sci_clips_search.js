@@ -17,9 +17,12 @@ var SciClipsSearchModule = (function(){
         + '</ul>'
     );
 
-    var titleAndAbstractSearchText = "null";
-    var authorSearchText = "null";
-    var topicHeadingSearchText ="null";
+    var titleAndAbstractSearchText;
+    var volumeIssueText;
+    var authorSearchText;
+    var publicationYearFrom;
+    var publicationYearTo;
+    var topicHeadingSearchText;
     var offset = 0;
     var limit = 25;
     var currentQueryRecordCount = 0;
@@ -93,19 +96,22 @@ var SciClipsSearchModule = (function(){
     };
 
     var performSearch = function() {
-        likeSearchString = '(upper(abstract)%20like%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27'
-            + '%20OR%20upper(short_title)%20like%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27)'
-            + (authorSearchText.length > 0 ? '%20AND%20upper(author)%20like%20%27%25' + authorSearchText.toUpperCase() + '%25%27' : '')
-            + (topicHeadingSearchText.length > 0 ? '%20AND%20upper(custom_2)%20like%20%27%25' + topicHeadingSearchText.toUpperCase() +'%25%27' : '');
+        likeSearchString = '(UPPER(abstract)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27'
+            + '%20OR%20UPPER(short_title)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27)'
+            + (volumeIssueText.length > 0 ? '%20AND%20custom_8%20LIKE%20%27%25' + volumeIssueText + '%25%27' : '')
+            + (authorSearchText.length > 0 ? '%20AND%20UPPER(author)%20LIKE%20%27%25' + authorSearchText.toUpperCase() + '%25%27' : '')
+            + (publicationYearFrom.length > 0 ? '%20AND%20year>=' +publicationYearFrom : '')
+            + (publicationYearTo.length > 0 ? '%20AND%20year<=' +publicationYearTo : '')
+            + (topicHeadingSearchText.length > 0 ? '%20AND%20UPPER(custom_2)%20LIKE%20%27%25' + topicHeadingSearchText.toUpperCase() +'%25%27' : '');
 
-        var orderString = '%20&$order=record_number%20DESC';
-        var limitString = '%20&$limit=' + limit;
-        var offsetString = '%20&$offset=' + offset;
+        var orderString = '%20&$ORDER=record_number%20DESC';
+        var limitString = '%20&$LIMIT=' + limit;
+        var offsetString = '%20&$OFFSET=' + offset;
 
-        var searchParams = '$where=' + likeSearchString + orderString + limitString + offsetString;
+        var searchParams = '$WHERE=' + likeSearchString + orderString + limitString + offsetString;
         searchURL = baseSearchURL + searchParams;
 
-        var countURL = baseSearchURL + "$select=sum(case(" + likeSearchString + ",%201,%20false,%200))%20as%20count";
+        var countURL = baseSearchURL + "$SELECT=SUM(CASE(" + likeSearchString + ",%201,%20FALSE,%200))%20AS%20count";
 
         loadingSpinner.toggle();
 
@@ -190,15 +196,25 @@ var SciClipsSearchModule = (function(){
     var getSearchText = function () {
         return {
             titleAndAbstractSearchText: titleAndAbstractSearchText,
+            volumeIssueText: volumeIssueText,
             authorSearchText: authorSearchText,
+            publicationYearFrom: publicationYearFrom,
+            publicationYearTo: publicationYearTo,
             topicHeadingSearchText: topicHeadingSearchText
         };
     };
 
     var setSearchText = function (text) {
         titleAndAbstractSearchText = text.titleAndAbstractSearchText;
+        volumeIssueText = text.volumeIssueText;
         authorSearchText = text.authorSearchText;
+        publicationYearFrom = text.publicationYearFrom;
+        publicationYearTo = text.publicationYearTo;
         topicHeadingSearchText = text.topicHeadingSearchText;
+    };
+
+    var toggleAdvancedSearch = function () {
+        $('.sci-clips-advanced-search').toggle();
     };
 
     return {
@@ -210,6 +226,7 @@ var SciClipsSearchModule = (function(){
         getPrev25Results: getPrev25Results,
         linkToIssue: linkToIssue,
         toggleAbstract: toggleAbstract,
+        toggleAdvancedSearch: toggleAdvancedSearch
     };
 })();
 
@@ -219,16 +236,28 @@ $(document).ready(function () {
         var titleAndAbstractSearchText = $('#search-text').val();
         var authorSearchText = $('#author-text').val();
         var topicHeadingSearchText = $('#topic-heading-text').val();
+        var volume = $('#science-clips-volume').val();
+        var issue = $('#science-clips-issue').val();
+        var volumeIssueText =  (volume.length > 0 || issue.length > 0) ? volume +':' +issue : '';
+        var publicationYearTo = $('#publication-year-to').val();
+        var publicationYearFrom = $('#publication-year-from').val();
+
         var searchText = SciClipsSearchModule.getSearchText();
 
         if(titleAndAbstractSearchText !== searchText.titleAndAbstractSearchText
+            || volumeIssueText !== searchText.volumeIssueText
             || authorSearchText !== searchText.authorSearchText
+            || publicationYearTo!== searchText.publicationYearTo
+            || publicationYearFrom !== searchText.publicationYearFrom
             || topicHeadingSearchText !== searchText.topicHeadingSearchText) {
             SciClipsSearchModule.resetSearch();
             SciClipsSearchModule.setSearchText(
                 {
                     titleAndAbstractSearchText: titleAndAbstractSearchText,
+                    volumeIssueText: volumeIssueText,
                     authorSearchText: authorSearchText,
+                    publicationYearTo: publicationYearTo,
+                    publicationYearFrom: publicationYearFrom,
                     topicHeadingSearchText: topicHeadingSearchText
                 }
             );
