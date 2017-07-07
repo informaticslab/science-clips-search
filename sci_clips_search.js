@@ -18,7 +18,6 @@ var SciClipsSearchModule = (function(){
     );
 
     var titleAndAbstractSearchText;
-    var volumeIssueText;
     var authorSearchText;
     var publicationYearFrom;
     var publicationYearTo;
@@ -98,7 +97,6 @@ var SciClipsSearchModule = (function(){
     var performSearch = function() {
         likeSearchString = '(UPPER(abstract)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27'
             + '%20OR%20UPPER(short_title)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27)'
-            + (volumeIssueText.length > 0 ? '%20AND%20custom_8%20LIKE%20%27%25' + volumeIssueText + '%25%27' : '')
             + (authorSearchText.length > 0 ? '%20AND%20UPPER(author)%20LIKE%20%27%25' + authorSearchText.toUpperCase() + '%25%27' : '')
             + (publicationYearFrom.length > 0 ? '%20AND%20year>=' +publicationYearFrom : '')
             + (publicationYearTo.length > 0 ? '%20AND%20year<=' +publicationYearTo : '')
@@ -196,7 +194,6 @@ var SciClipsSearchModule = (function(){
     var getSearchText = function () {
         return {
             titleAndAbstractSearchText: titleAndAbstractSearchText,
-            volumeIssueText: volumeIssueText,
             authorSearchText: authorSearchText,
             publicationYearFrom: publicationYearFrom,
             publicationYearTo: publicationYearTo,
@@ -206,7 +203,6 @@ var SciClipsSearchModule = (function(){
 
     var setSearchText = function (text) {
         titleAndAbstractSearchText = text.titleAndAbstractSearchText;
-        volumeIssueText = text.volumeIssueText;
         authorSearchText = text.authorSearchText;
         publicationYearFrom = text.publicationYearFrom;
         publicationYearTo = text.publicationYearTo;
@@ -238,16 +234,12 @@ $(document).ready(function () {
         var titleAndAbstractSearchText = $('#search-text').val();
         var authorSearchText = $('#author-text').val();
         var topicHeadingSearchText = $('#topic-heading-text').val();
-        var volume = $('#science-clips-volume').val();
-        var issue = $('#science-clips-issue').val();
-        var volumeIssueText =  (volume.length > 0 || issue.length > 0) ? volume +':' +issue : '';
         var publicationYearTo = $('#publication-year-to').val();
         var publicationYearFrom = $('#publication-year-from').val();
 
         var searchText = SciClipsSearchModule.getSearchText();
 
         if(titleAndAbstractSearchText !== searchText.titleAndAbstractSearchText
-            || volumeIssueText !== searchText.volumeIssueText
             || authorSearchText !== searchText.authorSearchText
             || publicationYearTo!== searchText.publicationYearTo
             || publicationYearFrom !== searchText.publicationYearFrom
@@ -256,7 +248,6 @@ $(document).ready(function () {
             SciClipsSearchModule.setSearchText(
                 {
                     titleAndAbstractSearchText: titleAndAbstractSearchText,
-                    volumeIssueText: volumeIssueText,
                     authorSearchText: authorSearchText,
                     publicationYearTo: publicationYearTo,
                     publicationYearFrom: publicationYearFrom,
