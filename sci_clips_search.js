@@ -19,6 +19,7 @@ var SciClipsSearchModule = (function(){
 
     var titleAndAbstractSearchText;
     var authorSearchText;
+    var publicationTitle;
     var publicationYearFrom;
     var publicationYearTo;
     var topicHeadingSearchText;
@@ -98,6 +99,7 @@ var SciClipsSearchModule = (function(){
         likeSearchString = '(UPPER(abstract)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27'
             + '%20OR%20UPPER(short_title)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27)'
             + (authorSearchText.length > 0 ? '%20AND%20UPPER(author)%20LIKE%20%27%25' + authorSearchText.toUpperCase() + '%25%27' : '')
+            + (publicationTitle.length > 0 ? '%20AND%20UPPER(secondary_title)%20LIKE%20%27%25' + publicationTitle.toUpperCase() + '%25%27' : '')
             + (publicationYearFrom.length > 0 ? '%20AND%20year>=' +publicationYearFrom : '')
             + (publicationYearTo.length > 0 ? '%20AND%20year<=' +publicationYearTo : '')
             + (topicHeadingSearchText.length > 0 ? '%20AND%20UPPER(custom_2)%20LIKE%20%27%25' + topicHeadingSearchText.toUpperCase() +'%25%27' : '');
@@ -197,7 +199,8 @@ var SciClipsSearchModule = (function(){
             authorSearchText: authorSearchText,
             publicationYearFrom: publicationYearFrom,
             publicationYearTo: publicationYearTo,
-            topicHeadingSearchText: topicHeadingSearchText
+            topicHeadingSearchText: topicHeadingSearchText,
+            publicationTitle: publicationTitle
         };
     };
 
@@ -207,6 +210,8 @@ var SciClipsSearchModule = (function(){
         publicationYearFrom = text.publicationYearFrom;
         publicationYearTo = text.publicationYearTo;
         topicHeadingSearchText = text.topicHeadingSearchText;
+        publicationTitle = text.publicationTitle;
+
     };
 
     var toggleAdvancedSearch = function () {
@@ -234,6 +239,7 @@ $(document).ready(function () {
         var titleAndAbstractSearchText = $('#search-text').val();
         var authorSearchText = $('#author-text').val();
         var topicHeadingSearchText = $('#topic-heading-text').val();
+        var publicationTitle = $('#publication-title').val();
         var publicationYearTo = $('#publication-year-to').val();
         var publicationYearFrom = $('#publication-year-from').val();
 
@@ -241,6 +247,7 @@ $(document).ready(function () {
 
         if(titleAndAbstractSearchText !== searchText.titleAndAbstractSearchText
             || authorSearchText !== searchText.authorSearchText
+            || publicationTitle !== searchText.publicationTitle
             || publicationYearTo!== searchText.publicationYearTo
             || publicationYearFrom !== searchText.publicationYearFrom
             || topicHeadingSearchText !== searchText.topicHeadingSearchText) {
@@ -249,6 +256,7 @@ $(document).ready(function () {
                 {
                     titleAndAbstractSearchText: titleAndAbstractSearchText,
                     authorSearchText: authorSearchText,
+                    publicationTitle: publicationTitle,
                     publicationYearTo: publicationYearTo,
                     publicationYearFrom: publicationYearFrom,
                     topicHeadingSearchText: topicHeadingSearchText
