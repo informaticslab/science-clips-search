@@ -56,6 +56,7 @@ var SciClipsSearchModule = (function(){
     var prev25ResultsButton = $('#prev-25-search-results');
     var next25ResultsButton = $('#next-25-search-results');
     var searchResultsControlPanel = $('#search-results-control-panel');
+    var advancedSearchIsDisplayed = false;
 
     var toggleAbstract = function(id) {
         $('#plus' + id).toggle();
@@ -109,7 +110,6 @@ var SciClipsSearchModule = (function(){
                 next25ResultsButton.show();
             }
         }
-        $(document).scrollTop($("#search-results-container").offset().top);
     };
 
     var displayErrorMessage = function() {
@@ -255,6 +255,8 @@ var SciClipsSearchModule = (function(){
     };
 
     var toggleAdvancedSearch = function () {
+        advancedSearchIsDisplayed = !advancedSearchIsDisplayed;
+        $('#advanced-search-toggle-icon').html(advancedSearchIsDisplayed ? '-' : '+');
         $('.sci-clips-advanced-search').toggle();
     };
 

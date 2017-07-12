@@ -295,63 +295,79 @@
                 <!-- body -->
                 <div id="body" class="span19">
                     <div id="contentArea">
-                        <div class="span19">
+                        <div class="row-fluid">
+                            <div class="span24">
+                                <form id="science-clips-search-form">
+                                    <div class="controls controls-row">
+                                        <label for="search-text" class="screen-reader-only">Title and abstract:</label>
+                                        <input type="text" class="form-control span24 sci-clips-search-input" id="search-text"
+                                               name="search-text" placeholder="Search in title and abstract..."
+                                               maxlength="80">
+                                    </div>
+                                    <a href="javascript:SciClipsSearchModule.toggleAdvancedSearch();">[<span id="advanced-search-toggle-icon">+</span>] Advanced search</a>
 
-                            <form id="science-clips-search-form">
-                                <div class="controls">
-                                    <label for="search-text" class="screen-reader-only">Title and abstract:</label>
-                                    <input type="text" class="form-control span19 sci-clips-search-input" id="search-text"
-                                           name="search-text" placeholder="Search in title and abstract..."
-                                           title="Search in title and abstract..." maxlength="80">
-                                    <label for="author-text" class="sci-clips-advanced-search screen-reader-only" style="display: none">Author:</label>
-                                    <input type="text" class="form-control span19 sci-clips-search-input sci-clips-advanced-search" id="author-text"
-                                           name="author-text" placeholder="Search for author..."
-                                           title="Search for author..." maxlength="80" style="display: none">
+                                    <div class="row-fluid">
+                                        <div class="sci-clips-advanced-search" style="display:none">
+                                            <div class="span12">
+                                                <div class="controls controls-row">
+                                                    <label for="author-text" class="screen-reader-only">Author:</label>
+                                                    <input type="text" class="form-control sci-clips-search-input span24" id="author-text"
+                                                           name="author-text" placeholder="Search for author..."
+                                                           maxlength="80">
+                                                </div>
 
-                                    <label for="topic-heading-text" class="sci-clips-advanced-search screen-reader-only" style="display: none">Topic heading:</label>
-                                    <input type="text" class="form-control sci-clips-search-input sci-clips-advanced-search span19" id="topic-heading-text"
-                                           name="topic-heading-text" placeholder="Search for topic heading..."
-                                           title="Search for topic heading..." maxlength="80" style="display: none">
+                                                <div class="controls controls-row">
+                                                    <label for="topic-heading-text" class="sci-clips-advanced-search screen-reader-only" style="display: none">Topic heading:</label>
+                                                    <input type="text" class="form-control sci-clips-search-input sci-clips-advanced-search span24" id="topic-heading-text"
+                                                           name="topic-heading-text" placeholder="Search for topic heading..."
+                                                           maxlength="80" style="display: none">
+                                                </div>
 
-                                    <label for="publication-title" class="sci-clips-advanced-search screen-reader-only" style="display: none">Publication title:</label>
-                                    <input type="text" class="form-control sci-clips-search-input sci-clips-advanced-search span19" id="publication-title"
-                                           name="publication-title" placeholder="Search for publication title..."
-                                           title="Search for publication title..." maxlength="80" style="display: none">
+                                                <div class="controls controls-row">
+                                                    <label for="publication-title" class="screen-reader-only">Publication title:</label>
+                                                    <input type="text" class="form-control sci-clips-search-input span24" id="publication-title"
+                                                           name="publication-title" placeholder="Search for publication title..."
+                                                           maxlength="80">
+                                                </div>
 
-                                    <div class="controls-row">
-                                        <label for="publication-year-from" class="sci-clips-advanced-search screen-reader-only" style="display:none;">From year</label>
-                                        <input type="number" class="form-control sci-clips-search-input sci-clips-advanced-search span4" id="publication-year-from"
-                                               name="publication-year-from" placeholder="From year"
-                                               title="From year" min="1" max="2999" style="display: none">
+                                                <label id="publication-year-from-label" class="screen-reader-only">From year</label>
+                                                <label id="publication-year-to-label" class="screen-reader-only">To year</label>
+                                                <div class="controls">
+                                                    <input type="number" class="sci-clips-search-input span12" id="publication-year-from"
+                                                           name="publication-year-from" placeholder="From year"
+                                                           min="1" max="2999" aria-labelledby="publication-year-from-label">
 
-                                        <label for="publication-year-to" class="form-control sci-clips-advanced-search screen-reader-only" style="display: none">To year</label>
-                                        <input type="number" class="sci-clips-search-input sci-clips-advanced-search span4" id="publication-year-to"
-                                               name="publication-year-to" placeholder="To year"
-                                               title="To year" min="1" max="2999" style="display: none">
 
+                                                    <input type="number" class="sci-clips-search-input span12" id="publication-year-to"
+                                                           name="publication-year-to" placeholder="To year"
+                                                           min="1" max="2999" aria-labelledby="publication-year-to-label">
+
+                                                </div>
+                                            </div>
+                                            <div class="span12">
+                                                <label id="article-tyoe-label">Article type:</label>
+                                                <div role="rowgroup" aria-labelledby="article-type-label">
+                                                    <label class="checkbox"><input type="checkbox" id="article_type_cdc_authored" value="CDC%20Authored%20Publications" class="form-control sci-clips-search-input"> CDC Authored Publications</label>
+                                                    <label class="checkbox"><input type="checkbox" id="article_type_cdc_vital_signs" value="CDC%20Vital%Signs" class="form-control sci-clips-search-input"> CDC Vital Signs</label>
+                                                    <label class="checkbox"><input type="checkbox" id="article_type_key_articles" value="Key%20Scientific%20Articles%20in%20Featured%20Topic%20Areas" class="form-control sci-clips-search-input"> Key Scientific Articles in Featured Topic Areas</label>
+                                                    <label class="checkbox"><input type="checkbox" id="article_type_media_noted_articles" value="Public%20Health%20Articles%20Noted%20in%20the%20Media" class="form-control sci-clips-search-input"> Public Health Articles Noted in the Media</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="sci-clips-advanced-search" role="row" style="display: none">
-                                        Article type:
-                                        <label class="checkbox"><input type="checkbox" id="article_type_cdc_authored" value="CDC%20Authored%20Publications" class="form-control sci-clips-search-input"> CDC Authored Publications</label>
-                                        <label class="checkbox"><input type="checkbox" id="article_type_cdc_vital_signs" value="CDC%20Vital%Signs" class="form-control sci-clips-search-input"> CDC Vital Signs</label>
-                                        <label class="checkbox"><input type="checkbox" id="article_type_key_articles" value="Key%20Scientific%20Articles%20in%20Featured%20Topic%20Areas" class="form-control sci-clips-search-input"> Key Scientific Articles in Featured Topic Areas</label>
-                                        <label class="checkbox"><input type="checkbox" id="article_type_media_noted_articles" value="Public%20Health%20Articles%20Noted%20in%20the%20Media" class="form-control sci-clips-search-input"> Public Health Articles Noted in the Media</label>
-                                    </div>
-
-                                    <a href="javascript:SciClipsSearchModule.toggleAdvancedSearch();">Advanced search</a>
                                     <div class="form-actions">
                                         <button class="btn btn-primary" id="search-button" type="button">Search</button>
                                         <button class="btn" type="reset">Clear Form</button>
                                     </div>
+                                </form>
+                                <div id="search-results-container"></div>
+                                <br/>
+                                <i id="loading-spinner" class="spinner icon-spinner icon-spin" style="display:none;"></i>
+                                <div id="search-results-control-panel" class="form-actions" style="display:none;">
+                                    <button class="btn btn-primary" id="prev-25-search-results" style="display: none">Previous 25</button>
+                                    <button class="btn btn-primary pull-right" id="next-25-search-results" style="display: none">Next 25</button>
                                 </div>
-                              </form>
-                            <div id="search-results-container"></div>
-                            <br/>
-                            <i id="loading-spinner" class="spinner icon-spinner icon-spin" style="display:none;"></i>
-                            <div id="search-results-control-panel" class="form-actions" style="display:none;">
-                                <button class="btn btn-primary" id="prev-25-search-results" style="display: none">Previous 25</button>
-                                <button class="btn btn-primary pull-right" id="next-25-search-results" style="display: none">Next 25</button>
                             </div>
                         </div>
                     </div>
