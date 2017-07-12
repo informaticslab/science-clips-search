@@ -1,13 +1,13 @@
 var SciClipsSearchModule = (function(){
-    //TODO: clean this up for cases where data is not present
     var template = _.template(
         '<ul>'
         + '<li>'
         + '<a target="_blank" href="<%=d.url%>"><%=d.short_title%></a><br/>'
         + '<% if(d.author){print(d.author +"<br/>")}%>'
-        + '<% if(d.secondary_title){print(d.secondary_title +". ")}%><% if(d.year){print(d.year +" ")}%><% if(d.date){print(d.date +";")}%><% if(d.volume){print(d.volume +":")}%><% if(d.pages){print(d.pages +".")}%>' + '<% print("("+SciClipsSearchModule.linkToIssue(d.custom_8)+")")%>'
+        + '<% if(d.secondary_title){print(d.secondary_title +". ")}%><% if(d.year){print(d.year +" ")}%><% if(d.date){print(d.date +";")}%><% if(d.volume){print(d.volume +":")}%><% if(d.pages){print(d.pages +".")}%>' + '<% if(d.custom_8){ print("("+SciClipsSearchModule.linkToIssue(d.custom_8)+")")}%>'
         + '<br/>'
         + '<% if(d.custom_2){print(d.custom_2 +"<br/>")}%>'
+        + '<% if(d.custom_1){print(d.custom_1 +"<br/>")}%>'
         + '<% if(d.abstract){%>'
         + '<a id="plus<%=d.record_number%>" href="javascript:SciClipsSearchModule.toggleAbstract(<%=d.record_number%>)">[+]Show Abstract</a>'
         + '<a style="display:none" id="minus<%=d.record_number%>" href="javascript:SciClipsSearchModule.toggleAbstract(<%=d.record_number%>)">[-]Hide Abstract</a>'
@@ -23,6 +23,28 @@ var SciClipsSearchModule = (function(){
     var publicationYearFrom;
     var publicationYearTo;
     var topicHeadingSearchText;
+    var articleType = {
+        cdcAuthored: {
+            queryString: 'CDC Authored Publications',
+            isChecked: false,
+            value: false
+        },
+        cdcVitalSigns: {
+            queryString: 'CDC Vital Signs',
+            isChecked: false,
+            value: false
+        },
+        keyArticles: {
+            queryString: 'Key Scientific Articles in Featured Topic Areas',
+            isChecked: false,
+            value: false
+        },
+        mediaNotedArticles: {
+            queryString: 'Public Health Articles Noted in the Media',
+            isChecked: false,
+            value: false
+        }
+    };
     var offset = 0;
     var limit = 25;
     var currentQueryRecordCount = 0;
@@ -102,7 +124,8 @@ var SciClipsSearchModule = (function(){
             + (publicationTitle.length > 0 ? '%20AND%20UPPER(secondary_title)%20LIKE%20%27%25' + publicationTitle.toUpperCase() + '%25%27' : '')
             + (publicationYearFrom.length > 0 ? '%20AND%20year>=' +publicationYearFrom : '')
             + (publicationYearTo.length > 0 ? '%20AND%20year<=' +publicationYearTo : '')
-            + (topicHeadingSearchText.length > 0 ? '%20AND%20UPPER(custom_2)%20LIKE%20%27%25' + topicHeadingSearchText.toUpperCase() +'%25%27' : '');
+            + (topicHeadingSearchText.length > 0 ? '%20AND%20UPPER(custom_2)%20LIKE%20%27%25' + topicHeadingSearchText.toUpperCase() +'%25%27' : '')
+            + generateArticleTypeQuery();
 
         var orderString = '%20&$ORDER=record_number%20DESC';
         var limitString = '%20&$LIMIT=' + limit;
@@ -167,6 +190,19 @@ var SciClipsSearchModule = (function(){
         }
     };
 
+    var generateArticleTypeQuery = function () {
+        var articleTypeQueryString = '';
+        var selectedTypes = _.filter(articleType, function(type){return type.value === true});
+        if(selectedTypes.length === 0) {
+            return articleTypeQueryString;
+        }
+        for(var i = 0; i < _.size(selectedTypes); i++) {
+            articleTypeQueryString += i !==0 ? '%20OR%20' : '' ;
+            articleTypeQueryString += 'custom_1=%27' +selectedTypes[i].queryString +'%27';
+        }
+        return '%20AND(' +articleTypeQueryString +')';
+    };
+
     var getNext25Results =  function () {
         prev25ResultsButton.hide();
         next25ResultsButton.hide();
@@ -200,7 +236,8 @@ var SciClipsSearchModule = (function(){
             publicationYearFrom: publicationYearFrom,
             publicationYearTo: publicationYearTo,
             topicHeadingSearchText: topicHeadingSearchText,
-            publicationTitle: publicationTitle
+            publicationTitle: publicationTitle,
+            articleType: articleType
         };
     };
 
@@ -211,7 +248,10 @@ var SciClipsSearchModule = (function(){
         publicationYearTo = text.publicationYearTo;
         topicHeadingSearchText = text.topicHeadingSearchText;
         publicationTitle = text.publicationTitle;
-
+        articleType.cdcAuthored.value = text.cdcAuthored;
+        articleType.cdcVitalSigns.value = text.cdcVitalSigns;
+        articleType.keyArticles.value = text.keyArticles;
+        articleType.mediaNotedArticles.value = text.mediaNotedArticles;
     };
 
     var toggleAdvancedSearch = function () {
@@ -236,20 +276,30 @@ $(document).ready(function () {
     $('#science-clips-search-form').trigger('reset');
 
     var search = function () {
+        var searchText = SciClipsSearchModule.getSearchText();
+
         var titleAndAbstractSearchText = $('#search-text').val();
         var authorSearchText = $('#author-text').val();
         var topicHeadingSearchText = $('#topic-heading-text').val();
         var publicationTitle = $('#publication-title').val();
         var publicationYearTo = $('#publication-year-to').val();
         var publicationYearFrom = $('#publication-year-from').val();
+        var cdcAuthored = $('#article_type_cdc_authored').prop('checked');
+        var cdcVitalSigns = $('#article_type_cdc_vital_signs').prop('checked');
+        var keyArticles = $('#article_type_key_articles').prop('checked');
+        var mediaNotedArticles = $('#article_type_media_noted_articles').prop('checked');
 
-        var searchText = SciClipsSearchModule.getSearchText();
+
 
         if(titleAndAbstractSearchText !== searchText.titleAndAbstractSearchText
             || authorSearchText !== searchText.authorSearchText
             || publicationTitle !== searchText.publicationTitle
             || publicationYearTo!== searchText.publicationYearTo
             || publicationYearFrom !== searchText.publicationYearFrom
+            || cdcAuthored !== searchText.articleType.cdcAuthored.value
+            || cdcVitalSigns !== searchText.articleType.cdcVitalSigns.value
+            || keyArticles !== searchText.articleType.keyArticles.value
+            || mediaNotedArticles !== searchText.articleType.mediaNotedArticles.value
             || topicHeadingSearchText !== searchText.topicHeadingSearchText) {
             SciClipsSearchModule.resetSearch();
             SciClipsSearchModule.setSearchText(
@@ -259,7 +309,11 @@ $(document).ready(function () {
                     publicationTitle: publicationTitle,
                     publicationYearTo: publicationYearTo,
                     publicationYearFrom: publicationYearFrom,
-                    topicHeadingSearchText: topicHeadingSearchText
+                    topicHeadingSearchText: topicHeadingSearchText,
+                    cdcAuthored: cdcAuthored,
+                    cdcVitalSigns: cdcVitalSigns,
+                    keyArticles: keyArticles,
+                    mediaNotedArticles: mediaNotedArticles
                 }
             );
             SciClipsSearchModule.performSearch();

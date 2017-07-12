@@ -320,15 +320,23 @@
 
                                     <div class="controls-row">
                                         <label for="publication-year-from" class="sci-clips-advanced-search screen-reader-only" style="display:none;">From year</label>
-                                        <input type="number" class="sci-clips-search-input sci-clips-advanced-search span4" id="publication-year-from"
+                                        <input type="number" class="form-control sci-clips-search-input sci-clips-advanced-search span4" id="publication-year-from"
                                                name="publication-year-from" placeholder="From year"
                                                title="From year" min="1" max="2999" style="display: none">
 
-                                        <label for="publication-year-to" class="sci-clips-advanced-search screen-reader-only" style="display: none">To year</label>
+                                        <label for="publication-year-to" class="form-control sci-clips-advanced-search screen-reader-only" style="display: none">To year</label>
                                         <input type="number" class="sci-clips-search-input sci-clips-advanced-search span4" id="publication-year-to"
                                                name="publication-year-to" placeholder="To year"
                                                title="To year" min="1" max="2999" style="display: none">
 
+                                    </div>
+
+                                    <div class="sci-clips-advanced-search" role="row" style="display: none">
+                                        Article type:
+                                        <label class="checkbox"><input type="checkbox" id="article_type_cdc_authored" value="CDC%20Authored%20Publications" class="form-control sci-clips-search-input"> CDC Authored Publications</label>
+                                        <label class="checkbox"><input type="checkbox" id="article_type_cdc_vital_signs" value="CDC%20Vital%Signs" class="form-control sci-clips-search-input"> CDC Vital Signs</label>
+                                        <label class="checkbox"><input type="checkbox" id="article_type_key_articles" value="Key%20Scientific%20Articles%20in%20Featured%20Topic%20Areas" class="form-control sci-clips-search-input"> Key Scientific Articles in Featured Topic Areas</label>
+                                        <label class="checkbox"><input type="checkbox" id="article_type_media_noted_articles" value="Public%20Health%20Articles%20Noted%20in%20the%20Media" class="form-control sci-clips-search-input"> Public Health Articles Noted in the Media</label>
                                     </div>
 
                                     <a href="javascript:SciClipsSearchModule.toggleAdvancedSearch();">Advanced search</a>
