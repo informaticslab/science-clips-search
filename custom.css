@@ -25,6 +25,17 @@
     }
 }
 
+/*
+ *  Fix for unfixed bug with Bootstrap 2 .controls-row input items
+ *  not having margin-left set to 0 in smaller viewports.
+ *  https://github.com/twbs/bootstrap/issues/5808
+*/
+@media (max-width: 979px) {
+    .row-fluid .controls-row [class*="span"]+[class*="span"]{
+        margin-left: 0px;
+    }
+}
+
 .screen-reader-only
 {
     position:absolute;
