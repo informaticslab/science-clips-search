@@ -1,3 +1,4 @@
+'use strict';
 var SciClipsSearchModule = (function(){
     var template = _.template(
         '<ul>'
@@ -31,6 +32,11 @@ var SciClipsSearchModule = (function(){
         },
         cdcVitalSigns: {
             queryString: 'CDC Vital Signs',
+            isChecked: false,
+            value: false
+        },
+        cdcGrandRounds: {
+            queryString: 'CDC Grand Rounds',
             isChecked: false,
             value: false
         },
@@ -159,17 +165,17 @@ var SciClipsSearchModule = (function(){
                     })
                         .success(function (data) {
                             loadingSpinner.toggle();
-                            displaySearchResults(data)
+                            displaySearchResults(data);
                         })
                         .fail(function () {
                             loadingSpinner.toggle();
                             displayErrorMessage();
-                        })
+                        });
                 })
                 .fail(function () {
                     loadingSpinner.toggle();
                     displayErrorMessage();
-                })
+                });
         } else {
             $.ajax({
                 type: 'GET',
@@ -181,7 +187,7 @@ var SciClipsSearchModule = (function(){
             })
                 .success(function (data) {
                     loadingSpinner.toggle();
-                    displaySearchResults(data)
+                    displaySearchResults(data);
                 })
                 .fail(function () {
                     loadingSpinner.toggle();
@@ -192,7 +198,7 @@ var SciClipsSearchModule = (function(){
 
     var generateArticleTypeQuery = function () {
         var articleTypeQueryString = '';
-        var selectedTypes = _.filter(articleType, function(type){return type.value === true});
+        var selectedTypes = _.filter(articleType, function(type){return type.value === true;});
         if(selectedTypes.length === 0) {
             return articleTypeQueryString;
         }
@@ -250,6 +256,7 @@ var SciClipsSearchModule = (function(){
         publicationTitle = text.publicationTitle;
         articleType.cdcAuthored.value = text.cdcAuthored;
         articleType.cdcVitalSigns.value = text.cdcVitalSigns;
+        articleType.cdcGrandRounds.value = text.cdcGrandRounds;
         articleType.keyArticles.value = text.keyArticles;
         articleType.mediaNotedArticles.value = text.mediaNotedArticles;
     };
@@ -288,6 +295,7 @@ $(document).ready(function () {
         var publicationYearFrom = $('#publication-year-from').val();
         var cdcAuthored = $('#article_type_cdc_authored').prop('checked');
         var cdcVitalSigns = $('#article_type_cdc_vital_signs').prop('checked');
+        var cdcGrandRounds = $('#article_type_cdc_grand_rounds').prop('checked');
         var keyArticles = $('#article_type_key_articles').prop('checked');
         var mediaNotedArticles = $('#article_type_media_noted_articles').prop('checked');
 
@@ -300,6 +308,7 @@ $(document).ready(function () {
             || publicationYearFrom !== searchText.publicationYearFrom
             || cdcAuthored !== searchText.articleType.cdcAuthored.value
             || cdcVitalSigns !== searchText.articleType.cdcVitalSigns.value
+            || cdcGrandRounds !== searchText.articleType.cdcGrandRounds.value
             || keyArticles !== searchText.articleType.keyArticles.value
             || mediaNotedArticles !== searchText.articleType.mediaNotedArticles.value
             || topicHeadingSearchText !== searchText.topicHeadingSearchText) {
@@ -314,6 +323,7 @@ $(document).ready(function () {
                     topicHeadingSearchText: topicHeadingSearchText,
                     cdcAuthored: cdcAuthored,
                     cdcVitalSigns: cdcVitalSigns,
+                    cdcGrandRounds: cdcGrandRounds,
                     keyArticles: keyArticles,
                     mediaNotedArticles: mediaNotedArticles
                 }
