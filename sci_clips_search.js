@@ -14,7 +14,7 @@ var SciClipsSearchModule = (function(){
         + '<a style="display:none" id="minus<%=d.record_number%>" href="javascript:SciClipsSearchModule.toggleAbstract(<%=d.record_number%>)">[-]Hide Abstract</a>'
         + '<div id="content<%=d.record_number%>" style="display: none"><%=d.abstract%></div>'
         + '<%}else{print("[No abstract]")}%>'
-        + '</li><p></p>'
+        + '</li>'
         + '</ul>'
     );
 
