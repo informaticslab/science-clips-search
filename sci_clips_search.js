@@ -15,34 +15,39 @@ var SciClipsSearchModule = (function(){
         + '</li>'
     );
 
+    //Search input values - text
     var titleAndAbstractSearchText;
     var authorSearchText;
     var publicationTitle;
     var publicationYearFrom;
     var publicationYearTo;
     var topicHeadingSearchText;
+
+    //Search input values - article type checkboxes
     var articleType = {
         cdcAuthored: {
             queryString: 'CDC Authored Publications',
-            value: false
+            value: null
         },
         cdcVitalSigns: {
             queryString: 'CDC Vital Signs',
-            value: false
+            value: null
         },
         cdcGrandRounds: {
             queryString: 'CDC Grand Rounds',
-            value: false
+            value: null
         },
         keyArticles: {
             queryString: 'Key Scientific Articles in Featured Topic Areas',
-            value: false
+            value: null
         },
         mediaNotedArticles: {
             queryString: 'Public Health Articles Noted in the Media',
-            value: false
+            value: null
         }
     };
+
+
     var searching = false;
     var offset = 0;
     var limit = 25;
@@ -56,6 +61,7 @@ var SciClipsSearchModule = (function(){
     var searchResultsControlPanel = $('#search-results-control-panel');
     var advancedSearchIsDisplayed = false;
     var appToken = "1XGlTdFOCn5DilvbOnya6Je0P";
+
     var buttons = {
         search: $('#search-button'),
         prevResults: $('#prev-search-results'),
@@ -64,6 +70,8 @@ var SciClipsSearchModule = (function(){
         clearSearchForm: $('#clear-search-form-button')
     };
 
+    //id is record_number field in dataset. Search result template appends id to 'abstractToggle' and 'abstractContent'
+    //for use in this function.
     var toggleAbstract = function(id) {
         var abstractToggle = $('#abstractToggle' +id);
         var toggleText = abstractToggle.html();
@@ -79,7 +87,6 @@ var SciClipsSearchModule = (function(){
     };
 
     var resetSearch = function () {
-        //searchText = "reset";
         offset = 0;
         currentQueryRecordCount = 0;
         searchResultsControlPanel.hide();
@@ -95,7 +102,6 @@ var SciClipsSearchModule = (function(){
         }
 
         searchResultsContainer.show(data.length > 0);
-
 
         if(offset === 0) {
             if(data.length > 0) {
@@ -222,12 +228,13 @@ var SciClipsSearchModule = (function(){
             + (publicationYearFrom.length > 0 ? '%20AND%20year>=' +publicationYearFrom : '')
             + (publicationYearTo.length > 0 ? '%20AND%20year<=' +publicationYearTo : '')
             + (topicHeadingSearchText.length > 0 ? '%20AND%20UPPER(custom_2)%20LIKE%20%27%25' + topicHeadingSearchText.toUpperCase() +'%25%27' : '')
-            + generateArticleTypeQuery();
+            + generateArticleTypeQueryString();
 
         return '$WHERE=' + searchParamsString;
     };
 
-    var generateArticleTypeQuery = function () {
+    //Creates query string from user selections in the article type checkboxes
+    var generateArticleTypeQueryString = function () {
         var articleTypeQueryString = '';
         var selectedTypes = _.filter(articleType, function(type){return type.value === true;});
         if(selectedTypes.length === 0) {
@@ -252,6 +259,7 @@ var SciClipsSearchModule = (function(){
         performSearch();
     };
 
+    //Create link to Science Clips issue by concatenating vol and issue pulled from custom_8 field in dataset.
     var linkToIssue = function(data) {
         if (data) {
             var info = data.split(":");
@@ -264,18 +272,7 @@ var SciClipsSearchModule = (function(){
         }
     };
 
-    var getSearchText = function () {
-        return {
-            titleAndAbstractSearchText: titleAndAbstractSearchText,
-            authorSearchText: authorSearchText,
-            publicationYearFrom: publicationYearFrom,
-            publicationYearTo: publicationYearTo,
-            topicHeadingSearchText: topicHeadingSearchText,
-            publicationTitle: publicationTitle,
-            articleType: articleType
-        };
-    };
-
+    //Set value for each input
     var setSearchText = function (text) {
         titleAndAbstractSearchText = text.titleAndAbstractSearchText;
         authorSearchText = text.authorSearchText;
@@ -298,141 +295,142 @@ var SciClipsSearchModule = (function(){
 
     };
 
+    //Entry point for search. Check if stored values match input from fields.
+    //If any field has changed, replace values and start new search.
+    var search = function () {
+        var titleAndAbstractSearchInput = $('#search-text').val();
+        var authorSearchInput = $('#author-text').val();
+        var topicHeadingSearchInput = $('#topic-heading-text').val();
+        var publicationTitleInput = $('#publication-title').val();
+        var publicationYearToInput = $('#publication-year-to').val();
+        var publicationYearFromInput = $('#publication-year-from').val();
+        var cdcAuthoredInput = $('#article_type_cdc_authored').prop('checked');
+        var cdcVitalSignsInput = $('#article_type_cdc_vital_signs').prop('checked');
+        var cdcGrandRoundsInput = $('#article_type_cdc_grand_rounds').prop('checked');
+        var keyArticlesInput = $('#article_type_key_articles').prop('checked');
+        var mediaNotedArticlesInput = $('#article_type_media_noted_articles').prop('checked');
+
+        if (titleAndAbstractSearchInput !== titleAndAbstractSearchText
+            || authorSearchInput !== authorSearchText
+            || publicationTitleInput !== publicationTitle
+            || publicationYearToInput !== publicationYearTo
+            || publicationYearFromInput !== publicationYearFrom
+            || cdcAuthoredInput !== articleType.cdcAuthored.value
+            || cdcVitalSignsInput !== articleType.cdcVitalSigns.value
+            || cdcGrandRoundsInput !== articleType.cdcGrandRounds.value
+            || keyArticlesInput !== articleType.keyArticles.value
+            || mediaNotedArticlesInput !== articleType.mediaNotedArticles.value
+            || topicHeadingSearchInput !== topicHeadingSearchText) {
+
+            resetSearch();
+            setSearchText({
+                titleAndAbstractSearchText: titleAndAbstractSearchInput,
+                authorSearchText: authorSearchInput,
+                publicationTitle: publicationTitleInput,
+                publicationYearTo: publicationYearToInput,
+                publicationYearFrom: publicationYearFromInput,
+                topicHeadingSearchText: topicHeadingSearchInput,
+                cdcAuthored: cdcAuthoredInput,
+                cdcVitalSigns: cdcVitalSignsInput,
+                cdcGrandRounds: cdcGrandRoundsInput,
+                keyArticles: keyArticlesInput,
+                mediaNotedArticles: mediaNotedArticlesInput
+            });
+            performSearch();
+        }
+    };
+
+    //Click/Touch handlers. focus() calls are placed here because webkit ignores focus() calls outside of click handlers.
+    var setupHandlers = function () {
+        buttons.search.on('click', function () {
+            if(!buttons.search.attr('disabled')) {
+                search();
+                var target = $('#results-summary-text');
+                $('html,body').animate({
+                    scrollTop: target.offset().top
+                }, 100, function () {
+                    target.focus();
+                });
+            }
+        }).on('touchend', function(e) {
+            e.preventDefault();
+            e.target.click();
+        });
+        $('.sci-clips-search-input').keydown(function (event) {
+            if(event.keyCode === 13 && !buttons.search.attr('disabled')){
+                search();
+                var target = $('#results-summary-text');
+                $('html,body').animate({
+                    scrollTop: target.offset().top
+                }, 100, function() {
+                    target.focus();
+                });
+            }
+        });
+        buttons.nextResults.html("Next " +limit)
+            .on('click', function () {
+                if(!buttons.nextResults.attr('disabled')) {
+                    var target = $('#results-summary-text');
+                    $('#search-results-container').slideUp(100, function () {
+                        $('html,body').animate({
+                            scrollTop: target.offset().top
+                        }, 0);
+                        target.focus();
+                        getNextResults();
+                    });
+                }
+            }).on('touchend', function (e) {
+            e.preventDefault();
+            e.target.click();
+        });
+        buttons.prevResults.html("Previous " +limit)
+            .on('click', function () {
+                if(!buttons.prevResults.attr('disabled')) {
+                    var target = $('#results-summary-text');
+                    $('#search-results-container').slideUp(100, function () {
+                        $('html,body').animate({
+                            scrollTop: target.offset().top
+                        }, 0);
+                        target.focus();
+                        getPrevResults();
+                    });
+                }
+            }).on('touchend', function (e) {
+            e.preventDefault();
+            e.target.click();
+        });
+        buttons.modifySearch.on('click', function () {
+            if(!buttons.modifySearch.attr('disabled')) {
+                var target = $('#search-text');
+                $('html,body').animate({
+                    scrollTop: target.offset().top
+                }, 100, function () {
+                    target.focus();
+                });
+            }
+        }).on('touchend', function(e) {
+            e.preventDefault();
+            e.target.click();
+        });
+    };
+
+    var init = function () {
+        $('#science-clips-search-form').trigger('reset');
+        setupHandlers();
+    };
+
     return {
-        setSearchText: setSearchText,
-        getSearchText: getSearchText,
-        resetSearch: resetSearch,
-        performSearch: performSearch,
-        getNextResults: getNextResults,
-        getPrevResults: getPrevResults,
+        init: init,
+
+        //These functions are used in the results template
         linkToIssue: linkToIssue,
         toggleAbstract: toggleAbstract,
-        toggleAdvancedSearch: toggleAdvancedSearch,
-        buttons: buttons,
-        limit: limit,
-        searchResultsSummary: searchResultsSummary
+        toggleAdvancedSearch: toggleAdvancedSearch
     };
 })();
 
 
 $(document).ready(function () {
-    $('#science-clips-search-form').trigger('reset');
-
-    var search = function () {
-        var searchText = SciClipsSearchModule.getSearchText();
-        var titleAndAbstractSearchText = $('#search-text').val();
-        var authorSearchText = $('#author-text').val();
-        var topicHeadingSearchText = $('#topic-heading-text').val();
-        var publicationTitle = $('#publication-title').val();
-        var publicationYearTo = $('#publication-year-to').val();
-        var publicationYearFrom = $('#publication-year-from').val();
-        var cdcAuthored = $('#article_type_cdc_authored').prop('checked');
-        var cdcVitalSigns = $('#article_type_cdc_vital_signs').prop('checked');
-        var cdcGrandRounds = $('#article_type_cdc_grand_rounds').prop('checked');
-        var keyArticles = $('#article_type_key_articles').prop('checked');
-        var mediaNotedArticles = $('#article_type_media_noted_articles').prop('checked');
-
-
-
-        if(titleAndAbstractSearchText !== searchText.titleAndAbstractSearchText
-            || authorSearchText !== searchText.authorSearchText
-            || publicationTitle !== searchText.publicationTitle
-            || publicationYearTo!== searchText.publicationYearTo
-            || publicationYearFrom !== searchText.publicationYearFrom
-            || cdcAuthored !== searchText.articleType.cdcAuthored.value
-            || cdcVitalSigns !== searchText.articleType.cdcVitalSigns.value
-            || cdcGrandRounds !== searchText.articleType.cdcGrandRounds.value
-            || keyArticles !== searchText.articleType.keyArticles.value
-            || mediaNotedArticles !== searchText.articleType.mediaNotedArticles.value
-            || topicHeadingSearchText !== searchText.topicHeadingSearchText) {
-            SciClipsSearchModule.resetSearch();
-            SciClipsSearchModule.setSearchText(
-                {
-                    titleAndAbstractSearchText: titleAndAbstractSearchText,
-                    authorSearchText: authorSearchText,
-                    publicationTitle: publicationTitle,
-                    publicationYearTo: publicationYearTo,
-                    publicationYearFrom: publicationYearFrom,
-                    topicHeadingSearchText: topicHeadingSearchText,
-                    cdcAuthored: cdcAuthored,
-                    cdcVitalSigns: cdcVitalSigns,
-                    cdcGrandRounds: cdcGrandRounds,
-                    keyArticles: keyArticles,
-                    mediaNotedArticles: mediaNotedArticles
-                }
-            );
-            SciClipsSearchModule.performSearch();
-        }
-    };
-    SciClipsSearchModule.buttons.search.on('click', function () {
-        if(!SciClipsSearchModule.buttons.search.attr('disabled')) {
-            search();
-            var target = $('#results-summary-text');
-            $('html,body').animate({
-                scrollTop: target.offset().top
-            }, 100, function () {
-                target.focus();
-            });
-        }
-    }).on('touchend', function(e) {
-        e.preventDefault();
-        e.target.click();
-    });
-    $('.sci-clips-search-input').keydown(function (event) {
-        if(event.keyCode === 13 && !SciClipsSearchModule.buttons.search.attr('disabled')){
-            search();
-            var target = $('#results-summary-text');
-            $('html,body').animate({
-                scrollTop: target.offset().top
-            }, 100, function() {
-                target.focus();
-            });
-        }
-    });
-    SciClipsSearchModule.buttons.nextResults.html("Next " +SciClipsSearchModule.limit)
-        .on('click', function () {
-            if(!SciClipsSearchModule.buttons.nextResults.attr('disabled')) {
-                var target = $('#results-summary-text');
-                $('#search-results-container').slideUp(100, function () {
-                    $('html,body').animate({
-                        scrollTop: target.offset().top
-                    }, 0);
-                    target.focus();
-                    SciClipsSearchModule.getNextResults();
-                });
-            }
-        }).on('touchend', function (e) {
-            e.preventDefault();
-            e.target.click();
-        });
-    SciClipsSearchModule.buttons.prevResults.html("Previous " +SciClipsSearchModule.limit)
-        .on('click', function () {
-            if(!SciClipsSearchModule.buttons.prevResults.attr('disabled')) {
-                var target = $('#results-summary-text');
-                $('#search-results-container').slideUp(100, function () {
-                    $('html,body').animate({
-                        scrollTop: target.offset().top
-                    }, 0);
-                    target.focus();
-                    SciClipsSearchModule.getPrevResults();
-                });
-            }
-        }).on('touchend', function (e) {
-            e.preventDefault();
-            e.target.click();
-        });
-    SciClipsSearchModule.buttons.modifySearch.on('click', function () {
-        if(!SciClipsSearchModule.buttons.modifySearch.attr('disabled')) {
-            var target = $('#search-text');
-            $('html,body').animate({
-                scrollTop: target.offset().top
-            }, 100, function () {
-                target.focus();
-            });
-        }
-    }).on('touchend', function(e) {
-        e.preventDefault();
-        e.target.click();
-    });
+    SciClipsSearchModule.init();
 });
 
