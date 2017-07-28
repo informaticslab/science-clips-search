@@ -1,21 +1,18 @@
 'use strict';
 var SciClipsSearchModule = (function(){
     var template = _.template(
-        '<ul>'
-        + '<li>'
+        '<li>'
         + '<a target="_blank" href="<%=d.url%>"><%=d.short_title%></a><br/>'
         + '<% if(d.author){print(d.author +"<br/>")}%>'
-        + '<% if(d.secondary_title){print(d.secondary_title +". ")}%><% if(d.year){print(d.year +" ")}%><% if(d.date){print(d.date +";")}%><% if(d.volume){print(d.volume +":")}%><% if(d.pages){print(d.pages +".")}%>' + '<% if(d.custom_8){ print("("+SciClipsSearchModule.linkToIssue(d.custom_8)+")")}%>'
+        + '<% if(d.secondary_title){print(d.secondary_title +". ")}%><% if(d.year){print(d.year +" ")}%><% if(d.date){print(d.date +";")}%><% if(d.volume){print(d.volume +":")}%><% if(d.pages){print(d.pages +".")}%>' + '<% if(d.custom_8){ print(SciClipsSearchModule.linkToIssue(d.custom_8))}%>'
         + '<br/>'
         + '<% if(d.custom_2){print(d.custom_2 +"<br/>")}%>'
         + '<% if(d.custom_1){print(d.custom_1 +"<br/>")}%>'
         + '<% if(d.abstract){%>'
-        + '<a id="plus<%=d.record_number%>" href="javascript:SciClipsSearchModule.toggleAbstract(<%=d.record_number%>)">[+]Show Abstract</a>'
-        + '<a style="display:none" id="minus<%=d.record_number%>" href="javascript:SciClipsSearchModule.toggleAbstract(<%=d.record_number%>)">[-]Hide Abstract</a>'
-        + '<div id="content<%=d.record_number%>" style="display: none"><%=d.abstract%></div>'
+        + '<a id="abstractToggle<%=d.record_number%>" href="javascript:SciClipsSearchModule.toggleAbstract(<%=d.record_number%>)" aria-expanded="false">[+]Abstract</a>'
+        + '<div id="abstractContent<%=d.record_number%>" style="display: none" aria-hidden="true"><%=d.abstract%></div>'
         + '<%}else{print("[No abstract]")}%>'
         + '</li>'
-        + '</ul>'
     );
 
     var titleAndAbstractSearchText;
@@ -46,84 +43,124 @@ var SciClipsSearchModule = (function(){
             value: false
         }
     };
+    var searching = false;
     var offset = 0;
     var limit = 25;
     var currentQueryRecordCount = 0;
     var baseSearchURL = 'https://data.cdc.gov/resource/d8c6-ee8v.json?';
-    var likeSearchString;
+    var searchParamsString;
     var searchURL;
     var loadingSpinner = $('#loading-spinner');
     var searchResultsContainer = $('#search-results-container');
-    var prev25ResultsButton = $('#prev-25-search-results');
-    var next25ResultsButton = $('#next-25-search-results');
+    var searchResultsSummary = $('#results-summary-text');
     var searchResultsControlPanel = $('#search-results-control-panel');
     var advancedSearchIsDisplayed = false;
     var appToken = "1XGlTdFOCn5DilvbOnya6Je0P";
+    var buttons = {
+        search: $('#search-button'),
+        prevResults: $('#prev-search-results'),
+        nextResults: $('#next-search-results'),
+        modifySearch: $('#modify-search'),
+        clearSearchForm: $('#clear-search-form-button')
+    };
 
     var toggleAbstract = function(id) {
-        $('#plus' + id).toggle();
-        $('#minus' + id).toggle();
-        $('#content' + id).toggle();
+        var abstractToggle = $('#abstractToggle' +id);
+        var toggleText = abstractToggle.html();
+        var abstractContent = $('#abstractContent' +id);
+        var showAbstractText = "[+]Abstract";
+        var hideAbstractText = "[-]Abstract";
+        var isExpanded = toggleText !== showAbstractText;
+
+        abstractToggle.html(isExpanded ? showAbstractText : hideAbstractText);
+        abstractContent.toggle();
+        abstractToggle.attr('aria-expanded', !isExpanded);
+        abstractContent.attr('aria-hidden', isExpanded);
     };
 
     var resetSearch = function () {
         //searchText = "reset";
         offset = 0;
         currentQueryRecordCount = 0;
-        searchResultsContainer.html("");
         searchResultsControlPanel.hide();
-        next25ResultsButton.hide();
-        prev25ResultsButton.hide();
+        searchResultsContainer.html("");
+        searchResultsSummary.html("");
     };
 
     var displaySearchResults = function(data) {
+        var resultsToDisplay = "";
         searchResultsContainer.html("");
         if(data.length > 0) {
-            searchResultsContainer.append("<h3>Displaying results " +(offset + 1) +" to " +(offset + data.length) +" of " +currentQueryRecordCount +":</h3>");
+            searchResultsSummary.html("Displaying results " +(offset + 1) +" to " +(offset + data.length) +" of " +currentQueryRecordCount);
         }
+
+        searchResultsContainer.show(data.length > 0);
+
+
         if(offset === 0) {
             if(data.length > 0) {
                 for(var i = 0; i < data.length; i++) {
-                    //console.log(data[i]);
-                    searchResultsContainer.append(template({d: data[i]}));
-                }
-
-                if(currentQueryRecordCount <= limit) {
-                    searchResultsContainer.append("No additional results found.");
-                } else {
-                    next25ResultsButton.show();
-                    searchResultsControlPanel.show();
+                    resultsToDisplay += template({d: data[i]})
                 }
             } else {
-                searchResultsContainer.html("No results found.");
+                searchResultsSummary.html("No results found.");
             }
         } else {
-            prev25ResultsButton.show();
-            searchResultsControlPanel.show();
             if(data.length > 0) {
                 for(var i = 0; i < data.length; i++) {
-                    //console.log(data[i]);
-                    searchResultsContainer.append(template({d: data[i]}));
+                    resultsToDisplay += template({d: data[i]});
                 }
             }
-            if (currentQueryRecordCount - offset <= limit) {
-                next25ResultsButton.hide();
-            } else {
-                next25ResultsButton.show();
-            }
+        }
+        searchResultsContainer.append(resultsToDisplay);
+        finishSearch();
+    };
+
+    var manageButtons = function () {
+        if(searching) {
+            buttons.search.addClass('disabled').attr('disabled', 'disabled');
+            buttons.prevResults.addClass('disabled').attr('disabled', 'disabled');
+            buttons.nextResults.addClass('disabled').attr('disabled', 'disabled');
+            buttons.modifySearch.addClass('disabled').attr('disabled', 'disabled');
+            buttons.clearSearchForm.addClass('disabled').attr('disabled', 'disabled');
+        } else {
+            if(currentQueryRecordCount - offset > limit) buttons.nextResults.removeClass('disabled').removeAttr('disabled');
+            if(offset > 0) buttons.prevResults.removeClass('disabled').removeAttr('disabled');
+            buttons.search.removeClass('disabled').removeAttr('disabled');
+            buttons.modifySearch.removeClass('disabled').removeAttr('disabled');
+            buttons.clearSearchForm.removeClass('disabled').removeAttr('disabled');
         }
     };
 
     var displayErrorMessage = function() {
-        searchResultsContainer.html("An error has occurred.");
+        searchResultsSummary.html("An error has occurred.");
+        finishSearch();
+    };
+
+    var prepareForSearch = function () {
+        searching = true;
+        searchResultsSummary.html('<i id="loading-spinner" class="spinner icon-spinner icon-spin" role="status"><p class="screen-reader-only">loading</p></i>');
+        searchResultsSummary.attr('aria-busy', true);
+        manageButtons();
+    };
+
+    var finishSearch = function () {
+        searching = false;
+        searchResultsSummary.attr('aria-busy', false);
+        searchResultsContainer.slideDown(100);
+        searchResultsControlPanel.show();
+        manageButtons();
     };
 
     var performSearch = function() {
-        searchURL = baseSearchURL + generateSearchParamsString();
+        prepareForSearch();
+        var orderString = '%20&$ORDER=record_number%20DESC';
+        var limitString = '%20&$LIMIT=' + limit;
+        var offsetString = '%20&$OFFSET=' + offset;
 
-        var countURL = baseSearchURL + "$SELECT=SUM(CASE(" + likeSearchString + ",%201,%20FALSE,%200))%20AS%20count";
+        searchURL = baseSearchURL + generateSearchParamsString() +orderString +limitString +offsetString;
 
-        loadingSpinner.toggle();
+        var countURL = baseSearchURL + "$SELECT=SUM(CASE(" + searchParamsString + ",%201,%20FALSE,%200))%20AS%20count";
 
         if (offset === 0) {
             $.ajax({
@@ -178,7 +215,7 @@ var SciClipsSearchModule = (function(){
     };
 
     var generateSearchParamsString = function () {
-        likeSearchString = '(UPPER(abstract)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27'
+        searchParamsString = '(UPPER(abstract)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27'
             + '%20OR%20UPPER(short_title)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27)'
             + (authorSearchText.length > 0 ? '%20AND%20UPPER(author)%20LIKE%20%27%25' + authorSearchText.toUpperCase() + '%25%27' : '')
             + (publicationTitle.length > 0 ? '%20AND%20UPPER(secondary_title)%20LIKE%20%27%25' + publicationTitle.toUpperCase() + '%25%27' : '')
@@ -187,11 +224,7 @@ var SciClipsSearchModule = (function(){
             + (topicHeadingSearchText.length > 0 ? '%20AND%20UPPER(custom_2)%20LIKE%20%27%25' + topicHeadingSearchText.toUpperCase() +'%25%27' : '')
             + generateArticleTypeQuery();
 
-        var orderString = '%20&$ORDER=record_number%20DESC';
-        var limitString = '%20&$LIMIT=' + limit;
-        var offsetString = '%20&$OFFSET=' + offset;
-
-        return '$WHERE=' + likeSearchString + orderString + limitString + offsetString;
+        return '$WHERE=' + searchParamsString;
     };
 
     var generateArticleTypeQuery = function () {
@@ -207,18 +240,14 @@ var SciClipsSearchModule = (function(){
         return '%20AND(' +articleTypeQueryString +')';
     };
 
-    var getNext25Results =  function () {
-        prev25ResultsButton.hide();
-        next25ResultsButton.hide();
-        searchResultsControlPanel.hide();
+    var getNextResults =  function () {
+        searchResultsSummary.html("");
         offset = offset + limit;
         performSearch();
     };
 
-    var getPrev25Results = function () {
-        prev25ResultsButton.hide();
-        next25ResultsButton.hide();
-        searchResultsControlPanel.hide();
+    var getPrevResults = function () {
+        searchResultsSummary.html("");
         offset = offset - limit;
         performSearch();
     };
@@ -264,7 +293,9 @@ var SciClipsSearchModule = (function(){
     var toggleAdvancedSearch = function () {
         advancedSearchIsDisplayed = !advancedSearchIsDisplayed;
         $('#advanced-search-toggle-icon').html(advancedSearchIsDisplayed ? '-' : '+');
-        $('.sci-clips-advanced-search').toggle();
+        $('#advanced-search-toggle').attr('aria-expanded', advancedSearchIsDisplayed);
+        $('.sci-clips-advanced-search').toggle().attr('aria-hidden', !advancedSearchIsDisplayed);
+
     };
 
     return {
@@ -272,11 +303,14 @@ var SciClipsSearchModule = (function(){
         getSearchText: getSearchText,
         resetSearch: resetSearch,
         performSearch: performSearch,
-        getNext25Results: getNext25Results,
-        getPrev25Results: getPrev25Results,
+        getNextResults: getNextResults,
+        getPrevResults: getPrevResults,
         linkToIssue: linkToIssue,
         toggleAbstract: toggleAbstract,
-        toggleAdvancedSearch: toggleAdvancedSearch
+        toggleAdvancedSearch: toggleAdvancedSearch,
+        buttons: buttons,
+        limit: limit,
+        searchResultsSummary: searchResultsSummary
     };
 })();
 
@@ -286,7 +320,6 @@ $(document).ready(function () {
 
     var search = function () {
         var searchText = SciClipsSearchModule.getSearchText();
-
         var titleAndAbstractSearchText = $('#search-text').val();
         var authorSearchText = $('#author-text').val();
         var topicHeadingSearchText = $('#topic-heading-text').val();
@@ -331,19 +364,75 @@ $(document).ready(function () {
             SciClipsSearchModule.performSearch();
         }
     };
-    $('#search-button').click(function () {
-        search();
+    SciClipsSearchModule.buttons.search.on('click', function () {
+        if(!SciClipsSearchModule.buttons.search.attr('disabled')) {
+            search();
+            var target = $('#results-summary-text');
+            $('html,body').animate({
+                scrollTop: target.offset().top
+            }, 100, function () {
+                target.focus();
+            });
+        }
+    }).on('touchend', function(e) {
+        e.preventDefault();
+        e.target.click();
     });
     $('.sci-clips-search-input').keydown(function (event) {
-        if(event.keyCode === 13){
+        if(event.keyCode === 13 && !SciClipsSearchModule.buttons.search.attr('disabled')){
             search();
+            var target = $('#results-summary-text');
+            $('html,body').animate({
+                scrollTop: target.offset().top
+            }, 100, function() {
+                target.focus();
+            });
         }
     });
-    $('#next-25-search-results').click(function () {
-        SciClipsSearchModule.getNext25Results();
-    });
-    $('#prev-25-search-results').click(function () {
-        SciClipsSearchModule.getPrev25Results();
+    SciClipsSearchModule.buttons.nextResults.html("Next " +SciClipsSearchModule.limit)
+        .on('click', function () {
+            if(!SciClipsSearchModule.buttons.nextResults.attr('disabled')) {
+                var target = $('#results-summary-text');
+                $('#search-results-container').slideUp(100, function () {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top
+                    }, 0);
+                    target.focus();
+                    SciClipsSearchModule.getNextResults();
+                });
+            }
+        }).on('touchend', function (e) {
+            e.preventDefault();
+            e.target.click();
+        });
+    SciClipsSearchModule.buttons.prevResults.html("Previous " +SciClipsSearchModule.limit)
+        .on('click', function () {
+            if(!SciClipsSearchModule.buttons.prevResults.attr('disabled')) {
+                var target = $('#results-summary-text');
+                $('#search-results-container').slideUp(100, function () {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top
+                    }, 0);
+                    target.focus();
+                    SciClipsSearchModule.getPrevResults();
+                });
+            }
+        }).on('touchend', function (e) {
+            e.preventDefault();
+            e.target.click();
+        });
+    SciClipsSearchModule.buttons.modifySearch.on('click', function () {
+        if(!SciClipsSearchModule.buttons.modifySearch.attr('disabled')) {
+            var target = $('#search-text');
+            $('html,body').animate({
+                scrollTop: target.offset().top
+            }, 100, function () {
+                target.focus();
+            });
+        }
+    }).on('touchend', function(e) {
+        e.preventDefault();
+        e.target.click();
     });
 });
 

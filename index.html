@@ -269,7 +269,6 @@
                 </div>
                 <div class="span19 pagetitle">
                     <div class="syndicate">
-                        <h1>Search Science Clips</h1>
                     </div>
                 </div>
                 <div id="share-bar" class="span19">
@@ -299,37 +298,36 @@
                             <div class="span24">
                                 <form id="science-clips-search-form">
                                     <div class="controls controls-row">
-                                        <label for="search-text" class="screen-reader-only">Title and abstract:</label>
+                                        <label for="search-text" class="screen-reader-only">Search in title and abstract:</label>
                                         <input type="text" class="form-control span24 sci-clips-search-input" id="search-text"
-                                               name="search-text" placeholder="Search in title and abstract..."
+                                               name="search-text" placeholder="Enter word to search for in title and abstract"
                                                maxlength="80">
                                     </div>
-                                    <a href="javascript:SciClipsSearchModule.toggleAdvancedSearch();">[<span id="advanced-search-toggle-icon">+</span>] Advanced search</a>
+                                    <a id="advanced-search-toggle" href="javascript:SciClipsSearchModule.toggleAdvancedSearch();" aria-expanded="false">[<span id="advanced-search-toggle-icon">+</span>] Advanced search</a>
 
                                     <div class="row-fluid">
-                                        <div class="sci-clips-advanced-search" style="display:none">
+                                        <div class="sci-clips-advanced-search" aria-hidden="true" style="display:none">
                                             <div class="span12" style="margin-right: 10px">
                                                 <div class="controls controls-row">
-                                                    <label for="author-text" class="screen-reader-only">Author:</label>
+                                                    <label for="author-text" class="screen-reader-only">Search for author name:</label>
                                                     <input type="text" class="form-control sci-clips-search-input span24" id="author-text"
-                                                           name="author-text" placeholder="Search for author..."
+                                                           name="author-text" placeholder="Enter author name"
                                                            maxlength="80">
                                                 </div>
 
                                                 <div class="controls controls-row">
-                                                    <label for="topic-heading-text" class="sci-clips-advanced-search screen-reader-only" style="display: none">Topic heading:</label>
+                                                    <label for="topic-heading-text" class="sci-clips-advanced-search screen-reader-only" style="display: none">Search for topic heading:</label>
                                                     <input type="text" class="form-control sci-clips-search-input sci-clips-advanced-search span24" id="topic-heading-text"
-                                                           name="topic-heading-text" placeholder="Search for topic heading..."
+                                                           name="topic-heading-text" placeholder="Enter topic heading"
                                                            maxlength="80" style="display: none">
                                                 </div>
 
                                                 <div class="controls controls-row">
-                                                    <label for="publication-title" class="screen-reader-only">Publication title:</label>
+                                                    <label for="publication-title" class="screen-reader-only">Search for publication title:</label>
                                                     <input type="text" class="form-control sci-clips-search-input span24" id="publication-title"
-                                                           name="publication-title" placeholder="Search for publication title..."
+                                                           name="publication-title" placeholder="Enter publication title"
                                                            maxlength="80">
                                                 </div>
-
                                                 <label id="publication-year-from-label" class="screen-reader-only">From year</label>
                                                 <label id="publication-year-to-label" class="screen-reader-only">To year</label>
                                                 <div class="controls controls-row">
@@ -357,15 +355,18 @@
 
                                     <div class="form-actions">
                                         <button class="btn btn-primary" id="search-button" type="button">Search</button>
-                                        <button class="btn" type="reset">Clear Form</button>
+                                        <button class="btn" id="clear-search-form-button" type="reset">Clear Form</button>
                                     </div>
                                 </form>
-                                <div id="search-results-container"></div>
+
+                                <h4 id="results-summary-text" tabindex="-1" aria-live="polite"></h4>
+                                <ul id="search-results-container" style="display: none"></ul>
+
                                 <br/>
-                                <i id="loading-spinner" class="spinner icon-spinner icon-spin" style="display:none;"></i>
                                 <div id="search-results-control-panel" class="form-actions" style="display:none;">
-                                    <button class="btn btn-primary" id="prev-25-search-results" style="display: none">Previous 25</button>
-                                    <button class="btn btn-primary pull-right" id="next-25-search-results" style="display: none">Next 25</button>
+                                    <button class="btn btn-primary disabled" id="prev-search-results" disabled="disabled">Previous</button>
+                                    <button class="btn btn-primary disabled" id="next-search-results" disabled="disabled">Next</button>
+                                    <button class="btn disabled" id="modify-search" disabled="disabled">Modify Search</button>
                                 </div>
                             </div>
                         </div>
