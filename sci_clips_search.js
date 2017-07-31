@@ -3,6 +3,10 @@ var SciClipsSearchModule = (function(){
     var template = _.template(
         '<li>'
         + '<a target="_blank" href="<%=d.url%>"><%=d.short_title%></a><br/>'
+        + '<% if(d.doi){ %>'
+        + '<div class="altmetric-embed" style="float: right" data-badge-type="donut" data-badge-popover="left" '
+        + 'data-doi="<%=d.doi%>"></div>'
+        + '<%}%>'
         + '<% if(d.author){print(d.author +"<br/>")}%>'
         + '<% if(d.secondary_title){print(d.secondary_title +". ")}%><% if(d.year){print(d.year +" ")}%><% if(d.date){print(d.date +";")}%><% if(d.volume){print(d.volume +":")}%><% if(d.pages){print(d.pages +".")}%>' + '<% if(d.custom_8){ print(SciClipsSearchModule.linkToIssue(d.custom_8))}%>'
         + '<br/>'
@@ -156,6 +160,7 @@ var SciClipsSearchModule = (function(){
         searchResultsContainer.slideDown(100);
         searchResultsControlPanel.show();
         manageButtons();
+        _altmetric_embed_init();
     };
 
     var performSearch = function() {
