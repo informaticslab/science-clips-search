@@ -2,7 +2,10 @@
 var SciClipsSearchModule = (function(){
     var template = _.template(
         '<li>'
-        + '<a target="_blank" href="<%=d.url%>"><%=d.short_title%></a><br/>'
+        + '<%if(d.accession_number){%><a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/<%=d.accession_number%>">'
+        + '<%=d.short_title%></a><br/>'
+        + '<%} else if(d.doi){%><a target="_blank" href="http://dx.doi.org/<%=d.doi%>"><%=d.short_title%></a><br/>'
+        + '<%} else {print(d.short_title +"<br/>")}%>'
         + '<% if(d.doi){ %>'
         + '<div class="altmetric-embed" style="float: right" data-badge-type="donut" data-badge-popover="left" '
         + 'data-doi="<%=d.doi%>"></div>'
@@ -50,7 +53,6 @@ var SciClipsSearchModule = (function(){
             value: null
         }
     };
-
 
     var searching = false;
     var offset = 0;
