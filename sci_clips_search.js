@@ -2,7 +2,7 @@
 var SciClipsSearchModule = (function(){
     var template = _.template(
         '<li>'
-        + '<%if(d.accession_number){%><a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/<%=d.accession_number%>">'
+        + '<%if(d.accession_number){%><a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/<%=d.accession_number%>/?otool=cdciclib">'
         + '<%=d.short_title%></a><br/>'
         + '<%} else if(d.doi){%><a target="_blank" href="http://dx.doi.org/<%=d.doi%>"><%=d.short_title%></a><br/>'
         + '<%} else {print(d.short_title +"<br/>")}%>'
