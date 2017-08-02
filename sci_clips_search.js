@@ -28,7 +28,7 @@ var SciClipsSearchModule = (function(){
     var publicationTitle;
     var publicationYearFrom;
     var publicationYearTo;
-    var topicHeadingSearchText;
+    var subjectHeadingSearchText;
 
     //Search input values - article type checkboxes
     var articleType = {
@@ -228,7 +228,7 @@ var SciClipsSearchModule = (function(){
             + (publicationTitle.length > 0 ? '%20AND%20UPPER(secondary_title)%20LIKE%20%27%25' + publicationTitle.toUpperCase() + '%25%27' : '')
             + (publicationYearFrom.length > 0 ? '%20AND%20year>=' +publicationYearFrom : '')
             + (publicationYearTo.length > 0 ? '%20AND%20year<=' +publicationYearTo : '')
-            + (topicHeadingSearchText.length > 0 ? '%20AND%20UPPER(custom_2)%20LIKE%20%27%25' + topicHeadingSearchText.toUpperCase() +'%25%27' : '')
+            + (subjectHeadingSearchText.length > 0 ? '%20AND%20UPPER(custom_2)%20LIKE%20%27%25' + subjectHeadingSearchText.toUpperCase() +'%25%27' : '')
             + generateArticleTypeQueryString();
 
         return '$WHERE=' + searchParamsString;
@@ -279,7 +279,7 @@ var SciClipsSearchModule = (function(){
         authorSearchText = text.authorSearchText;
         publicationYearFrom = text.publicationYearFrom;
         publicationYearTo = text.publicationYearTo;
-        topicHeadingSearchText = text.topicHeadingSearchText;
+        subjectHeadingSearchText = text.subjectHeadingSearchText;
         publicationTitle = text.publicationTitle;
         articleType.cdcAuthored.value = text.cdcAuthored;
         articleType.cdcVitalSigns.value = text.cdcVitalSigns;
@@ -301,7 +301,7 @@ var SciClipsSearchModule = (function(){
     var search = function () {
         var titleAndAbstractSearchInput = $('#search-text').val();
         var authorSearchInput = $('#author-text').val();
-        var topicHeadingSearchInput = $('#topic-heading-text').val();
+        var subjectHeadingSearchInput = $('#subject-heading-text').val();
         var publicationTitleInput = $('#publication-title').val();
         var publicationYearToInput = $('#publication-year-to').val();
         var publicationYearFromInput = $('#publication-year-from').val();
@@ -321,7 +321,7 @@ var SciClipsSearchModule = (function(){
             || cdcGrandRoundsInput !== articleType.cdcGrandRounds.value
             || keyArticlesInput !== articleType.keyArticles.value
             || mediaNotedArticlesInput !== articleType.mediaNotedArticles.value
-            || topicHeadingSearchInput !== topicHeadingSearchText) {
+            || subjectHeadingSearchInput !== subjectHeadingSearchText) {
 
             resetSearch();
             setSearchText({
@@ -330,7 +330,7 @@ var SciClipsSearchModule = (function(){
                 publicationTitle: publicationTitleInput,
                 publicationYearTo: publicationYearToInput,
                 publicationYearFrom: publicationYearFromInput,
-                topicHeadingSearchText: topicHeadingSearchInput,
+                subjectHeadingSearchText: subjectHeadingSearchInput,
                 cdcAuthored: cdcAuthoredInput,
                 cdcVitalSigns: cdcVitalSignsInput,
                 cdcGrandRounds: cdcGrandRoundsInput,
