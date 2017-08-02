@@ -61,7 +61,6 @@ var SciClipsSearchModule = (function(){
     var baseSearchURL = 'https://data.cdc.gov/resource/d8c6-ee8v.json?';
     var searchParamsString;
     var searchURL;
-    var loadingSpinner = $('#loading-spinner');
     var searchResultsContainer = $('#search-results-container');
     var searchResultsSummary = $('#results-summary-text');
     var searchResultsControlPanel = $('#search-results-control-panel');
@@ -195,16 +194,13 @@ var SciClipsSearchModule = (function(){
                         }
                     })
                         .success(function (data) {
-                            loadingSpinner.toggle();
                             displaySearchResults(data);
                         })
                         .fail(function () {
-                            loadingSpinner.toggle();
                             displayErrorMessage();
                         });
                 })
                 .fail(function () {
-                    loadingSpinner.toggle();
                     displayErrorMessage();
                 });
         } else {
@@ -217,11 +213,9 @@ var SciClipsSearchModule = (function(){
                 }
             })
                 .success(function (data) {
-                    loadingSpinner.toggle();
                     displaySearchResults(data);
                 })
                 .fail(function () {
-                    loadingSpinner.toggle();
                     displayErrorMessage();
                 })
         }
