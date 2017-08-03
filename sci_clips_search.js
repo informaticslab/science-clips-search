@@ -166,18 +166,18 @@ var SciClipsSearchModule = (function(){
 
     var performSearch = function() {
         prepareForSearch();
-        var orderString = '%20&$ORDER=record_number%20DESC';
-        var limitString = '%20&$LIMIT=' + limit;
-        var offsetString = '%20&$OFFSET=' + offset;
+        var orderString = ' &$ORDER=record_number DESC';
+        var limitString = ' &$LIMIT=' + limit;
+        var offsetString = ' &$OFFSET=' + offset;
 
         searchURL = baseSearchURL + generateSearchParamsString() +orderString +limitString +offsetString;
 
-        var countURL = baseSearchURL + "$SELECT=SUM(CASE(" + searchParamsString + ",%201,%20FALSE,%200))%20AS%20count";
+        var countURL = baseSearchURL + "$SELECT=SUM(CASE(" +searchParamsString + ", 1, FALSE, 0)) AS count";
 
         if (offset === 0) {
             $.ajax({
                 type: 'GET',
-                url: countURL,
+                url: encodeURI(countURL),
                 dataType: 'json',
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-APP-TOKEN", appToken);
@@ -187,7 +187,7 @@ var SciClipsSearchModule = (function(){
                     currentQueryRecordCount = data[0].count;
                     $.ajax({
                         type: 'GET',
-                        url: searchURL,
+                        url: encodeURI(searchURL),
                         dataType: 'json',
                         beforeSend: function (xhr) {
                             xhr.setRequestHeader("X-APP-TOKEN", appToken);
@@ -206,7 +206,7 @@ var SciClipsSearchModule = (function(){
         } else {
             $.ajax({
                 type: 'GET',
-                url: searchURL,
+                url: encodeURI(searchURL),
                 dataType: 'json',
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-APP-TOKEN", appToken);
@@ -222,30 +222,35 @@ var SciClipsSearchModule = (function(){
     };
 
     var generateSearchParamsString = function () {
-        searchParamsString = '(UPPER(abstract)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27'
-            + '%20OR%20UPPER(short_title)%20LIKE%20%27%25' + titleAndAbstractSearchText.toUpperCase() + '%25%27)'
-            + (authorSearchText.length > 0 ? '%20AND%20UPPER(author)%20LIKE%20%27%25' + authorSearchText.toUpperCase() + '%25%27' : '')
-            + (publicationTitle.length > 0 ? '%20AND%20UPPER(secondary_title)%20LIKE%20%27%25' + publicationTitle.toUpperCase() + '%25%27' : '')
-            + (publicationYearFrom.length > 0 ? '%20AND%20year>=' +publicationYearFrom : '')
-            + (publicationYearTo.length > 0 ? '%20AND%20year<=' +publicationYearTo : '')
-            + (subjectHeadingSearchText.length > 0 ? '%20AND%20UPPER(custom_2)%20LIKE%20%27%25' + subjectHeadingSearchText.toUpperCase() +'%25%27' : '')
+        searchParamsString = "(" +generateLIKEQueryString("abstract", titleAndAbstractSearchText)
+            + " OR " +generateLIKEQueryString("short_title", titleAndAbstractSearchText) +")"
+            + (authorSearchText.length > 0 ? " AND " +generateLIKEQueryString("author", authorSearchText) : "")
+            + (publicationTitle.length > 0 ? " AND " +generateLIKEQueryString("secondary_title", publicationTitle) : "")
+            + (publicationYearFrom.length > 0 ? " AND year>=" +publicationYearFrom : "")
+            + (publicationYearTo.length > 0 ? " AND year<=" +publicationYearTo : "")
+            + (subjectHeadingSearchText.length > 0 ? " AND " +generateLIKEQueryString("custom_2", subjectHeadingSearchText) : "")
             + generateArticleTypeQueryString();
 
         return '$WHERE=' + searchParamsString;
     };
 
+    //Returns case insensitive query string where all ' chars are escaped with an additional ', per the Socrata API docs.
+    var generateLIKEQueryString = function (fieldName, query) {
+        return "UPPER(" +fieldName +") LIKE '%" +query.toUpperCase().replace(/'/g, "''") +"%'";
+    };
+
     //Creates query string from user selections in the article type checkboxes
     var generateArticleTypeQueryString = function () {
-        var articleTypeQueryString = '';
+        var articleTypeQueryString = "";
         var selectedTypes = _.filter(articleType, function(type){return type.value === true;});
         if(selectedTypes.length === 0) {
             return articleTypeQueryString;
         }
         for(var i = 0; i < _.size(selectedTypes); i++) {
-            articleTypeQueryString += i !==0 ? '%20OR%20' : '' ;
-            articleTypeQueryString += 'custom_1=%27' +selectedTypes[i].queryString +'%27';
+            articleTypeQueryString += i !==0 ? " OR " : "";
+            articleTypeQueryString += "custom_1='" +selectedTypes[i].queryString +"'";
         }
-        return '%20AND(' +articleTypeQueryString +')';
+        return " AND(" +articleTypeQueryString +")";
     };
 
     var getNextResults =  function () {
